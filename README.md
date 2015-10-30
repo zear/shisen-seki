@@ -13,9 +13,11 @@ Game modes:
 
 Authors
 -------
-* Programming - Artur Rojek (zear)
+* Programming & fonts - Artur Rojek (zear)
 * Graphics - Joe Vargas (jxv)
 
 License
 -------
 * Source code - [MIT License](LICENSE.txt)
+* Graphics - [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
+* Fonts - [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)

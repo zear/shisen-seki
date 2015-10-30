@@ -136,13 +136,13 @@ void gameGuiDraw()
 	sprintf(txtStones, "Stones Left: %d", stonesLeft);
 	sprintf(txtBottomBar, "Time: %02lu:%02lu  Stones Left: %d", gameTime/FPS/60, gameTime/FPS%60, stonesLeft);
 
-	txtPositionY = SCREEN_H - (gameFont.h + gameFont.leading);
+	txtPositionY = SCREEN_H - (gameFontSelected.h + gameFontSelected.leading);
 
 	if (gameOver && !stonesLeft)
 	{
-		dTextCentered(&gameFont, txtGameOver, SCREEN_H/2 - (gameFont.h + gameFont.leading)/2);
+		dTextCentered(&gameFontSelected, txtGameOver, SCREEN_H/2 - (gameFontSelected.h + gameFontSelected.leading)/2);
 	}
-	dTextCentered(&gameFont, txtBottomBar, txtPositionY);
+	dTextCentered(&gameFontSelected, txtBottomBar, txtPositionY);
 }
 
 void gameDraw()

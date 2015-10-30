@@ -12,8 +12,8 @@ typedef struct font
 	int leading;
 } font;
 
-extern font gameFont;
-extern font gameFontGray;
+extern font gameFontRegular;
+extern font gameFontSelected;
 
 int fontLoad(font *fontObj, char *filename, int glyphWidth, int glyphHeight, int tracking, int leading);
 void fontUnload(font *fontObj);

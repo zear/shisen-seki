@@ -5,8 +5,8 @@
 #include "main.h"
 #include "video.h"
 
-font gameFont;
-font gameFontGray;
+font gameFontRegular;
+font gameFontSelected;
 
 int fontLoad(font *fontObj, char *filename, int glyphWidth, int glyphHeight, int tracking, int leading)
 {

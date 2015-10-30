@@ -252,9 +252,9 @@ void titleDraw()
 
 		strcpy(page, helpPage ? "[Page 2]" : "[Page 1]");
 
-		dText(&gameFontGray, page, 2, 2);
-		dTextCentered(&gameFont, helpHeader[helpPage], 50 - (gameFont.h + gameFont.leading) * 2);
-		dTextCentered(&gameFontGray, helpText[helpPage], 50);
+		dText(&gameFontSelected, page, 2, 2);
+		dTextCentered(&gameFontRegular, helpHeader[helpPage], 50 - (gameFontRegular.h + gameFontRegular.leading) * 2);
+		dTextCentered(&gameFontSelected, helpText[helpPage], 50);
 	}
 	else if (displayCredits)
 	{
@@ -288,25 +288,25 @@ void titleDraw()
 
 		strcpy(page, creditsPage ? "[Page 2]" : "[Page 1]");
 
-		dText(&gameFontGray, page, 2, 2);
-		dTextCentered(&gameFont, "Credits", 50 - (gameFont.h + gameFont.leading) * 2);
+		dText(&gameFontSelected, page, 2, 2);
+		dTextCentered(&gameFontRegular, "Credits", 50 - (gameFontRegular.h + gameFontRegular.leading) * 2);
 
 		for (i = 0; i < 10; ++i)
 		{
-			dTextCentered(&gameFontGray, creditsText[creditsPage][i], 50 + (gameFont.h + gameFont.leading) * i);
+			dTextCentered(&gameFontSelected, creditsText[creditsPage][i], 50 + (gameFontRegular.h + gameFontRegular.leading) * i);
 		}
 	}
 	else
 	{
 		char version[15];
 		sprintf(version, "v%d.%d.%d", PROGRAM_MAJOR_VERSION, PROGRAM_MINOR_VERSION, PROGRAM_PATCH_VERSION);
-		dText(&gameFontGray, version, SCREEN_W - strlen(version) * (gameFontGray.w + gameFontGray.tracking), 1);
-		dTextCentered(&gameFont, "S h i s e n - S e k i", 80);
+		dText(&gameFontSelected, version, SCREEN_W - strlen(version) * (gameFontSelected.w + gameFontSelected.tracking), 1);
+		dTextCentered(&gameFontRegular, "S h i s e n - S e k i", 80);
 
 		if (programStateNew == STATE_GAME)
 		{
-			dTextCentered(&gameFont, "* Generating new board *", SCREEN_H/2);
-			dTextCentered(&gameFont, "Please wait...", SCREEN_H/2 + (gameFont.h + gameFont.leading) * 2);
+			dTextCentered(&gameFontRegular, "* Generating new board *", SCREEN_H/2);
+			dTextCentered(&gameFontRegular, "Please wait...", SCREEN_H/2 + (gameFontRegular.h + gameFontRegular.leading) * 2);
 		}
 		else
 		{
@@ -338,11 +338,11 @@ void titleDraw()
 
 			for (i = savePresent ? 0 : 1; i < sizeof(menuItems)/sizeof(menuItems[0]); ++i)
 			{
-				font *curFont = (i == menuSel ? &gameFont : &gameFontGray);
+				font *curFont = (i == menuSel ? &gameFontSelected : &gameFontRegular);
 				dTextCentered(curFont, menuItems[i], SCREEN_H/2 + (curFont->h + curFont->leading) * i);
 			}
 		}
 
-		dTextCentered(&gameFont, "(c) 2015 Artur Rojek", SCREEN_H - (gameFont.h + gameFont.leading));
+		dTextCentered(&gameFontSelected, "(c) 2015 Artur Rojek", SCREEN_H - (gameFontSelected.h + gameFontSelected.leading));
 	}
 }
