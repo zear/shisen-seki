@@ -79,6 +79,8 @@ void dText(font *fontObj, char *string, int x, int y, shadowType withShadow)
 			{
 				case SHADOW_DROP:
 					drawImage(fontObj->shadow->tiles.image, &fontObj->shadow->tiles.clip[(signed int)string[letterNum]], screen, r.x + FONT_SHADOW_OFFSET_X, r.y);
+					drawImage(fontObj->shadow->tiles.image, &fontObj->shadow->tiles.clip[(signed int)string[letterNum]], screen, r.x, r.y + FONT_SHADOW_OFFSET_Y);
+					drawImage(fontObj->shadow->tiles.image, &fontObj->shadow->tiles.clip[(signed int)string[letterNum]], screen, r.x + FONT_SHADOW_OFFSET_X, r.y + FONT_SHADOW_OFFSET_Y);
 				break;
 				case SHADOW_OUTLINE:
 					drawImage(fontObj->shadow->tiles.image, &fontObj->shadow->tiles.clip[(signed int)string[letterNum]], screen, r.x - FONT_SHADOW_OFFSET_X, r.y);

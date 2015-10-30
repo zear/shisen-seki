@@ -339,10 +339,10 @@ void titleDraw()
 			for (i = savePresent ? 0 : 1; i < sizeof(menuItems)/sizeof(menuItems[0]); ++i)
 			{
 				font *curFont = (i == menuSel ? &gameFontSelected : &gameFontRegular);
-				dTextCentered(curFont, menuItems[i], 80 + (curFont->h + curFont->leading) * i, SHADOW_OUTLINE);
+				dTextCentered(curFont, menuItems[i], 80 + (curFont->h + curFont->leading) * i, SHADOW_DROP);
 			}
 		}
 
-		dTextCentered(&gameFontSelected, "(c) 2015 Artur Rojek", SCREEN_H - (gameFontSelected.h + gameFontSelected.leading), SHADOW_OUTLINE);
+		dTextCentered(&gameFontSelected, "(c) 2015 Artur Rojek", SCREEN_H - (gameFontSelected.h + gameFontSelected.leading), SHADOW_DROP);
 	}
 }
