@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Shisen-Seki
+Comment=A game of Shisen-Sho
+Exec=shisen.elf
+Terminal=false
+Type=Application
+StartupNotify=true
+Icon=shisen
+Categories=games;

@@ -1,0 +1,53 @@
+#ifndef _STONE_H_
+#define _STONE_H_
+
+typedef enum stoneType
+{
+	STONE_EMPTY = 0,
+	DOT_ONE,
+	DOT_TWO,
+	DOT_THREE,
+	DOT_FOUR,
+	DOT_FIVE,
+	DOT_SIX,
+	DOT_SEVEN,
+	DOT_EIGHT,
+	DOT_NINE,
+	BAMBOO_ONE,
+	BAMBOO_TWO,
+	BAMBOO_THREE,
+	BAMBOO_FOUR,
+	BAMBOO_FIVE,
+	BAMBOO_SIX,
+	BAMBOO_SEVEN,
+	BAMBOO_EIGHT,
+	BAMBOO_NINE,
+	CHAR_ONE,
+	CHAR_TWO,
+	CHAR_THREE,
+	CHAR_FOUR,
+	CHAR_FIVE,
+	CHAR_SIX,
+	CHAR_SEVEN,
+	CHAR_EIGHT,
+	CHAT_NINE,
+	WIND_EAST,
+	WIND_SOUTH,
+	WIND_WEST,
+	WIND_NORTH,
+	DRAGON_RED,
+	DRAGON_GREEN,
+	DRAGON_WHITE,
+	FLOWER_ORC,
+	FLOWER_CRYS,
+	STONE_COUNT
+} stoneType;
+
+typedef struct stone
+{
+	stoneType type;
+	int x;
+	int y;
+} stone;
+
+#endif /* _STONE_H_ */
