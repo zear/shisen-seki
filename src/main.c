@@ -28,12 +28,22 @@ int init()
 		return -1;
 	}
 
-	if (fontLoad(&gameFontRegular, "data/gfx/fontRegular.bmp", 6, 11, 1, 4))
+	if (fontLoad(&gameFontShadow, "data/gfx/fontGray.bmp", 6, 11, 1, 4, NULL))
 	{
 		return -1;
 	}
 
-	if (fontLoad(&gameFontSelected, "data/gfx/fontSelected.bmp", 6, 11, 1, 4))
+	if (fontLoad(&gameFontRegular, "data/gfx/fontWhite.bmp", 6, 11, 1, 4, &gameFontShadow))
+	{
+		return -1;
+	}
+
+	if (fontLoad(&gameFontSelected, "data/gfx/fontOrange.bmp", 6, 11, 1, 4, &gameFontShadow))
+	{
+		return -1;
+	}
+
+	if (fontLoad(&gameFontBlack, "data/gfx/fontBlack.bmp", 6, 11, 1, 4, &gameFontRegular))
 	{
 		return -1;
 	}
@@ -48,8 +58,10 @@ void deinit()
 		free(configDir);
 	}
 
+	fontUnload(&gameFontShadow);
 	fontUnload(&gameFontRegular);
 	fontUnload(&gameFontSelected);
+	fontUnload(&gameFontBlack);
 
 	deinitAudio();
 	deinitSDL();
