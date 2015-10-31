@@ -4,6 +4,7 @@
 #include "board.h"
 #include "fileio.h"
 #include "font.h"
+#include "hiscore.h"
 #include "input.h"
 #include "main.h"
 #include "states.h"
@@ -16,6 +17,9 @@ int canMoveX;
 int canMoveY;
 unsigned long gameTime;
 int gameOver;
+scoreEntry hiscoreEntry;
+int enteringHiscore;
+int scoreCursorPos;
 
 void gameUnload()
 {
@@ -27,84 +31,212 @@ void gameUnload()
 void gameLoad()
 {
 	boardLoad();
+	enteringHiscore = 0;
 }
 
 void gameLogic()
 {
-	if (keys[KEY_BACK])
+	if (enteringHiscore)
 	{
-		keys[KEY_BACK] = 0;
-		programStateNew = STATE_TITLE;
-	}
-	if (keys[KEY_LEFT])
-	{
-		if (--canMoveX <= 0)
+		if (keys[KEY_BACK])
 		{
-			canMoveX = KEY_DELAY;
-			--cursorX;
+			keys[KEY_BACK] = 0;
 		}
-	}
-	else if (keys[KEY_RIGHT])
-	{
-		if (--canMoveX <= 0)
+
+		if (keys[KEY_LEFT])
 		{
-			canMoveX = KEY_DELAY;
-			++cursorX;
+			if (--canMoveX <= 0)
+			{
+				canMoveX = KEY_DELAY;
+				--scoreCursorPos;
+			}
+		}
+		else if (keys[KEY_RIGHT])
+		{
+			if (--canMoveX <= 0)
+			{
+				canMoveX = KEY_DELAY;
+				++scoreCursorPos;
+			}
+		}
+		else
+		{
+			canMoveX = 0;
+		}
+
+		if (keys[KEY_UP])
+		{
+			if (--canMoveY <= 0)
+			{
+				canMoveY = KEY_DELAY;
+				++hiscoreEntry.name[scoreCursorPos];
+			}
+
+			if ((hiscoreEntry.name[scoreCursorPos] > ' ') && (hiscoreEntry.name[scoreCursorPos] < 'A'))
+			{
+				hiscoreEntry.name[scoreCursorPos] = 'A';
+			}
+			else if ((hiscoreEntry.name[scoreCursorPos] > 'Z') && (hiscoreEntry.name[scoreCursorPos] < 'a'))
+			{
+				hiscoreEntry.name[scoreCursorPos] = 'a';
+			}
+			else if (hiscoreEntry.name[scoreCursorPos] > 'z')
+			{
+				hiscoreEntry.name[scoreCursorPos] = ' ';
+			}
+		}
+		else if (keys[KEY_DOWN])
+		{
+			if (--canMoveY <= 0)
+			{
+				canMoveY = KEY_DELAY;
+				--hiscoreEntry.name[scoreCursorPos];
+			}
+
+			if (hiscoreEntry.name[scoreCursorPos] < ' ')
+			{
+				hiscoreEntry.name[scoreCursorPos] = 'z';
+			}
+			else if ((hiscoreEntry.name[scoreCursorPos] > ' ') && (hiscoreEntry.name[scoreCursorPos] < 'A'))
+			{
+				hiscoreEntry.name[scoreCursorPos] = ' ';
+			}
+			else if ((hiscoreEntry.name[scoreCursorPos] > 'Z') && (hiscoreEntry.name[scoreCursorPos] < 'a'))
+			{
+				hiscoreEntry.name[scoreCursorPos] = 'Z';
+			}
+		}
+		else
+		{
+			canMoveY = 0;
+		}
+
+		if (keys[KEY_OK])
+		{
+			hiscoreEntry.time = gameTime;
+			hiscoreAddRecord(&hiscoreEntry, &currentGameMode, &currentAlgorithm);
+			storeHiscore();
+			programStateNew = STATE_HISCORE;
+		}
+
+		if (keys[KEY_CANCEL])
+		{
+			keys[KEY_CANCEL] = 0;
+		}
+
+		if (scoreCursorPos < 0)
+		{
+			scoreCursorPos = 0;
+		}
+		else if (scoreCursorPos >= SCORE_NAME_LEN - 1)
+		{
+			scoreCursorPos = SCORE_NAME_LEN - 2;
 		}
 	}
 	else
 	{
-		canMoveX = 0;
-	}
-
-	if (keys[KEY_UP])
-	{
-		if (--canMoveY <= 0)
+		if (keys[KEY_BACK])
 		{
-			canMoveY = KEY_DELAY;
-			--cursorY;
+			keys[KEY_BACK] = 0;
+			programStateNew = STATE_TITLE;
 		}
-	}
-	else if (keys[KEY_DOWN])
-	{
-		if (--canMoveY <= 0)
+
+		if (keys[KEY_LEFT])
 		{
-			canMoveY = KEY_DELAY;
-			++cursorY;
+			if (--canMoveX <= 0)
+			{
+				canMoveX = KEY_DELAY;
+				--cursorX;
+			}
 		}
-	}
-	else
-	{
-		canMoveY = 0;
-	}
+		else if (keys[KEY_RIGHT])
+		{
+			if (--canMoveX <= 0)
+			{
+				canMoveX = KEY_DELAY;
+				++cursorX;
+			}
+		}
+		else
+		{
+			canMoveX = 0;
+		}
 
-	if (keys[KEY_OK])
-	{
-		boardSelectStone(cursorX, cursorY);
-		keys[KEY_OK] = 0;
-	}
+		if (keys[KEY_UP])
+		{
+			if (--canMoveY <= 0)
+			{
+				canMoveY = KEY_DELAY;
+				--cursorY;
+			}
+		}
+		else if (keys[KEY_DOWN])
+		{
+			if (--canMoveY <= 0)
+			{
+				canMoveY = KEY_DELAY;
+				++cursorY;
+			}
+		}
+		else
+		{
+			canMoveY = 0;
+		}
 
-	if (keys[KEY_CANCEL])
-	{
-		stoneA.type = STONE_EMPTY;
-		keys[KEY_CANCEL] = 0;
-	}
+		if (keys[KEY_OK])
+		{
+			keys[KEY_OK] = 0;
 
-	if (cursorX < 1)
-	{
-		cursorX = BOARD_W - 2;
-	}
-	if (cursorX >= BOARD_W - 1)
-	{
-		cursorX = 1;
-	}
-	if (cursorY < 1)
-	{
-		cursorY = BOARD_H - 2;
-	}
-	if (cursorY >= BOARD_H - 1)
-	{
-		cursorY = 1;
+			if (gameOver)
+			{
+				if (stonesLeft)
+				{
+					programStateNew = STATE_TITLE;
+				}
+				else
+				{
+					int i;
+					enteringHiscore = 1;
+					scoreCursorPos = 0;
+
+					for (i = 0; i < SCORE_NAME_LEN - 1; ++i)
+					{
+						hiscoreEntry.name[i] = ' ';
+					}
+
+					hiscoreEntry.name[scoreCursorPos] = 'A';
+					hiscoreEntry.name[SCORE_NAME_LEN-1] = '\n';
+				}
+			}
+			else
+			{
+				boardSelectStone(cursorX, cursorY);
+			}
+		}
+
+		if (keys[KEY_CANCEL])
+		{
+			stoneA.type = STONE_EMPTY;
+			keys[KEY_CANCEL] = 0;
+		}
+
+		if (cursorX < 1)
+		{
+			cursorX = BOARD_W - 2;
+		}
+		if (cursorX >= BOARD_W - 1)
+		{
+			cursorX = 1;
+		}
+		if (cursorY < 1)
+		{
+			cursorY = BOARD_H - 2;
+		}
+		if (cursorY >= BOARD_H - 1)
+		{
+			cursorY = 1;
+		}
+
 	}
 
 	if (!gameOver)
@@ -123,13 +255,34 @@ void gameGuiDraw()
 
 	if (gameOver)
 	{
-		if (stonesLeft)
+		if (enteringHiscore)
 		{
-			sprintf(txtGameOver, "No moves left!");
+			int i;
+			char txtHiscore[SCORE_NAME_LEN];
+
+			strcpy(txtHiscore, hiscoreEntry.name);
+
+			dTextCentered(&gameFontRegular, "Enter your name:", 40, SHADOW_OUTLINE);
+
+			dTextCentered(&gameFontRegular, txtHiscore, SCREEN_H/2 - (gameFontRegular.h + gameFontRegular.leading)/2, SHADOW_OUTLINE);
+
+			for (i = 0; i < SCORE_NAME_LEN - 1; ++i)
+			{
+				txtHiscore[i] = (i == scoreCursorPos) ? (hiscoreEntry.name[scoreCursorPos] == ' ' ? '_' : hiscoreEntry.name[scoreCursorPos]) : ' ';
+			}
+
+			dTextCentered(&gameFontSelected, txtHiscore, SCREEN_H/2 - (gameFontSelected.h + gameFontSelected.leading)/2, SHADOW_OUTLINE);
 		}
 		else
 		{
-			sprintf(txtGameOver, "Congratulations!");
+			if (stonesLeft)
+			{
+				sprintf(txtGameOver, "No moves left!");
+			}
+			else
+			{
+				sprintf(txtGameOver, "Congratulations!");
+			}
 		}
 	}
 	sprintf(txtTime, "Time: %02lu:%02lu", gameTime/FPS/60, gameTime/FPS%60);
@@ -138,9 +291,9 @@ void gameGuiDraw()
 
 	txtPositionY = SCREEN_H - (gameFontShadow.h + gameFontShadow.leading);
 
-	if (gameOver && !stonesLeft)
+	if (gameOver && !stonesLeft && !enteringHiscore)
 	{
-		dTextCentered(&gameFontShadow, txtGameOver, SCREEN_H/2 - (gameFontShadow.h + gameFontShadow.leading)/2, SHADOW_NONE);
+		dTextCentered(&gameFontRegular, txtGameOver, SCREEN_H/2 - (gameFontRegular.h + gameFontRegular.leading)/2, SHADOW_OUTLINE);
 	}
 	dTextCentered(&gameFontShadow, txtBottomBar, txtPositionY, SHADOW_NONE);
 }

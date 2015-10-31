@@ -2,6 +2,7 @@
 
 #include <SDL.h>
 #include "game.h"
+#include "hiscore.h"
 #include "main.h"
 #include "title.h"
 #include "video.h"
@@ -22,6 +23,9 @@ void checkState()
 			case STATE_GAME:
 				gameUnload();
 			break;
+			case STATE_HISCORE:
+				hiscoreUnload();
+			break;
 
 			default:
 			break;
@@ -34,6 +38,9 @@ void checkState()
 			break;
 			case STATE_GAME:
 				gameLoad();
+			break;
+			case STATE_HISCORE:
+				hiscoreLoad();
 			break;
 
 			default:
@@ -56,6 +63,9 @@ void logic()
 		case STATE_GAME:
 			gameLogic();
 		break;
+		case STATE_HISCORE:
+			hiscoreLogic();
+		break;
 
 		default:
 		break;
@@ -73,6 +83,9 @@ void draw()
 		break;
 		case STATE_GAME:
 			gameDraw();
+		break;
+		case STATE_HISCORE:
+			hiscoreDraw();
 		break;
 
 		default:

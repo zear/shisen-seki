@@ -11,7 +11,7 @@
 #include "states.h"
 #include "video.h"
 
-#define MENU_ITEM_COUNT	7
+#define MENU_ITEM_COUNT	8
 
 int menuSel;
 int displayHelp;
@@ -140,14 +140,18 @@ void titleLogic()
 				break;
 
 				case 4:
-					displayHelp = 1;
+					programStateNew = STATE_HISCORE;
 				break;
 
 				case 5:
-					displayCredits = 1;
+					displayHelp = 1;
 				break;
 
 				case 6:
+					displayCredits = 1;
+				break;
+
+				case 7:
 					quit = 1;
 				break;
 
@@ -239,7 +243,7 @@ void titleLogic()
 
 void titleDraw()
 {
-	char menuItems[MENU_ITEM_COUNT][20] = {"Continue game", "New game", "Game type", "Algorithm", "Help", "Credits", "Exit"};
+	char menuItems[MENU_ITEM_COUNT][20] = {"Continue game", "New game", "Game type", "Algorithm", "Score table", "Help", "Credits", "Exit"};
 	int i;
 
 	drawImage(titleBackgroundIMG, NULL, screen, 0, 0);

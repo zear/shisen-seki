@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include "board.h"
 #include "game.h"
+#include "hiscore.h"
 
 char *configDir;
 
@@ -234,6 +235,131 @@ void storeBoard()
 	}
 	fwrite(&currentGameMode, sizeof(currentGameMode), 1, f);
 	fwrite(&gameTime, sizeof(gameTime), 1, f);
+
+	fclose(f);
+	free(save);
+}
+
+int getHiscore(int probe)
+{
+	FILE *f;
+	char *save;
+	int i;
+	int j;
+	uint8_t version;
+	uint8_t scoreLen;
+
+	if(!configDir)
+	{
+		printf("Config directory doesn't exist.\n");
+		return 0;
+	}
+
+	save = (char *)malloc(strlen(configDir) + strlen("/score.dat") + 1);
+
+	if(!save)
+	{
+		return 0;
+	}
+
+	sprintf(save, "%s/score.dat", configDir);
+
+	f = fopen(save, "rb");
+
+	if(f == NULL)
+	{
+		printf("Failed to open score file: \"%s\" for writing.\n", save);
+		return 0;
+	}
+
+	fread(&version, sizeof(uint8_t), 1, f);
+
+	if (version != HISCORE_FORMAT_VERSION)
+	{
+		fclose(f);
+		free(save);
+		printf("Incompatible score file in version %d. Required version: %d.\n", version, SAVE_FORMAT_VERSION);
+		return 0;
+	}
+
+	if (probe)
+	{
+		fclose(f);
+		free(save);
+		return 1;
+	}
+
+	fread(&scoreLen, sizeof(uint8_t), 1, f);
+
+	for (i = 0; i < MAX_MODES; ++i)
+	{
+		for (j = 0; j < scoreLen; ++j)
+		{
+			int n;
+
+			for (n = 0; n < SCORE_NAME_LEN-1; ++n)
+			{
+				fread(&scoreTable[i][j].name[n], sizeof(char), 1, f);
+			}
+			scoreTable[i][j].name[SCORE_NAME_LEN-1] = '\n';
+			fread(&scoreTable[i][j].time, sizeof(scoreTable[i][j].time), 1, f);
+		}
+	}
+
+	fclose(f);
+	free(save);
+
+	return 1;
+}
+
+void storeHiscore()
+{
+	FILE *f;
+	char *save;
+	int i;
+	int j;
+	uint8_t version = HISCORE_FORMAT_VERSION;
+	uint8_t scoreLen = MAX_SCORES;
+
+	if(!configDir)
+	{
+		printf("Config directory doesn't exist.\n");
+		return;
+	}
+
+	save = (char *)malloc(strlen(configDir) + strlen("/score.dat") + 1);
+
+	if(!save)
+	{
+		return;
+	}
+
+	sprintf(save, "%s/score.dat", configDir);
+
+	f = fopen(save, "wb");
+
+	if(f == NULL)
+	{
+		printf("Failed to open score file: \"%s\" for writing.\n", save);
+		return;
+	}
+
+	fwrite(&version, sizeof(uint8_t), 1, f);
+	fwrite(&scoreLen, sizeof(uint8_t), 1, f);
+
+	for (i = 0; i < MAX_MODES; ++i)
+	{
+		for (j = 0; j < scoreLen; ++j)
+		{
+			int n;
+
+			for (n = 0; n < SCORE_NAME_LEN-1; ++n)
+			{
+				fwrite(&scoreTable[i][j].name[n], sizeof(char), 1, f);
+			}
+			fwrite(&scoreTable[i][j].time, sizeof(scoreTable[i][j].time), 1, f);
+		}
+	}
 
 	fclose(f);
 	free(save);
