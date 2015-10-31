@@ -23,7 +23,6 @@ void hiscoreLoad()
 		hiscoreBackgroundIMG = loadImage("data/gfx/background.bmp");
 	}
 
-	getHiscore(0);
 	hiscorePage = 0;
 }
 
@@ -80,7 +79,7 @@ void hiscoreAddRecord(scoreEntry *entry, gameMode *mode, algorithm *algo)
 		return;
 	}
 
-	for (i = MAX_SCORES - 2; i > place; --i)
+	for (i = MAX_SCORES - 2; i >= place; --i)
 	{
 		scoreTable[modeId][i+1] = scoreTable[modeId][i];
 	}

@@ -138,7 +138,32 @@ void gameLogic()
 		if (keys[KEY_BACK])
 		{
 			keys[KEY_BACK] = 0;
-			programStateNew = STATE_TITLE;
+
+			if (gameOver)
+			{
+				if (stonesLeft)
+				{
+					programStateNew = STATE_TITLE;
+				}
+				else
+				{
+					int i;
+					enteringHiscore = 1;
+					scoreCursorPos = 0;
+
+					for (i = 0; i < SCORE_NAME_LEN - 1; ++i)
+					{
+						hiscoreEntry.name[i] = ' ';
+					}
+
+					hiscoreEntry.name[scoreCursorPos] = 'A';
+					hiscoreEntry.name[SCORE_NAME_LEN-1] = '\n';
+				}
+			}
+			else
+			{
+				programStateNew = STATE_TITLE;
+			}
 		}
 
 		if (keys[KEY_LEFT])
