@@ -320,7 +320,7 @@ void gameGuiDraw()
 	{
 		dTextCentered(&gameFontRegular, txtGameOver, SCREEN_H/2 - (gameFontRegular.h + gameFontRegular.leading)/2, SHADOW_OUTLINE);
 	}
-	dTextCentered(&gameFontShadow, txtBottomBar, txtPositionY, SHADOW_NONE);
+	dTextCentered(&gameFontShadow, (gameOver && stonesLeft) ? txtGameOver : txtBottomBar, txtPositionY, SHADOW_NONE);
 }
 
 void gameDraw()
