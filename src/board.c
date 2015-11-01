@@ -325,15 +325,22 @@ void boardSelectStone(int x, int y)
 	}
 }
 
-int boardCheckHorizontalIntersection(line *A, line *B)
+int boardCheckHorizontalIntersection(line *A, line *B, stone *stoneA, stone *stoneB)
 {
 	int i;
-	int j;
+	int j = 0;
+
+	int maxJ;
+	int dir;
+	int posY;
 
 	int x1 = A->x1 < B->x1 ? A->x1 : B->x1;
 	int x2 = A->x2 > B->x2 ? A->x2 : B->x2;
 	int y1 = A->y1 > B->y1 ? A->y1 : B->y1;
 	int y2 = A->y2 < B->y2 ? A->y2 : B->y2;
+
+	int stoneY1;
+	int stoneY2;
 
 	if (x1 == x2)
 	{
@@ -345,11 +352,44 @@ int boardCheckHorizontalIntersection(line *A, line *B)
 		return 0;
 	}
 
-	for (j = y1; j <= y2; ++j)
+	stoneY1 = (stoneA->y > stoneB->y) ? stoneB->y : stoneA->y;
+	stoneY2 = (stoneA->y > stoneB->y) ? stoneA->y : stoneB->y;
+
+	if (stoneY1 < y1)
+	{
+		stoneY1 = y1;
+	}
+	if (stoneY2 > y2)
+	{
+		stoneY2 = y2;
+	}
+
+	maxJ = y2 - y1;
+	// Locate the center position between stones and set it as initial Y field.
+	posY = stoneY1 + (stoneY2 - stoneY1)/2;
+	dir = 1;
+
+	/* Y position is calculated by starting in the center field and progressing to outer-most fields by reversing the check direction every turn.
+	 Example #1:
+	 [5] <- y1
+	 [3]
+	 [1] <- starting position
+	 [2]
+	 [4] <- y2
+
+	 Example #2:
+	 [5] <- y1
+	 [4]
+	 [3]
+	 [1] <- starting position
+	 [2] <- y2
+	*/
+
+	while (j <= maxJ)
 	{
 		for (i = x1; i <= x2; ++i)
 		{
-			if (stones[i][j] > STONE_EMPTY)
+			if (stones[i][posY] > STONE_EMPTY)
 			{
 				break;
 			}
@@ -359,25 +399,48 @@ int boardCheckHorizontalIntersection(line *A, line *B)
 		{
 			lineC.x1 = x1;
 			lineC.x2 = x2;
-			lineC.y1 = j;
-			lineC.y2 = j;
+			lineC.y1 = posY;
+			lineC.y2 = posY;
 
 			return 1;
+		}
+
+		++j;
+		// If the next non-checked field is outside check boundaries, jump to the nearest field instead.
+		if ((posY + j * dir) > y2)
+		{
+			--posY;
+		}
+		else if ((posY + j * dir) < y1)
+		{
+			++posY;
+		}
+		else // Next non-checked field is within boundaries.
+		{
+			posY += j * dir;	// Jump to the next non-checked inner-most field.
+			dir = -dir;		// Reverse direction of checking for the next turn.
 		}
 	}
 
 	return 0;
 }
 
-int boardCheckVerticalIntersection(line *A, line *B)
+int boardCheckVerticalIntersection(line *A, line *B, stone *stoneA, stone *stoneB)
 {
-	int i;
+	int i = 0;
 	int j;
+
+	int maxI;
+	int dir;
+	int posX;
 
 	int x1 = A->x1 > B->x1 ? A->x1 : B->x1;
 	int x2 = A->x2 < B->x2 ? A->x2 : B->x2;
 	int y1 = A->y1 < B->y1 ? A->y1 : B->y1;
 	int y2 = A->y2 > B->y2 ? A->y2 : B->y2;
+
+	int stoneX1;
+	int stoneX2;
 
 	if (y1 == y2)
 	{
@@ -389,32 +452,57 @@ int boardCheckVerticalIntersection(line *A, line *B)
 		return 0;
 	}
 
-	for (i = x1; i <= x2; ++i)
+	stoneX1 = (stoneA->x > stoneB->x) ? stoneB->x : stoneA->x;
+	stoneX2 = (stoneA->x > stoneB->x) ? stoneA->x : stoneB->x;
+
+	if (stoneX1 < x1)
+	{
+		stoneX1 = x1;
+	}
+	if (stoneX2 > x2)
+	{
+		stoneX2 = x2;
+	}
+
+	maxI = x2 - x1;
+	posX = stoneX1 + (stoneX2 - stoneX1)/2;
+	dir = 1;
+
+	/* See boardCheckHorizontalIntersection function comments for implementation details of below algorithm. */
+	while (i <= maxI)
 	{
 		for (j = y1; j <= y2; ++j)
 		{
-			if (stones[i][j] > STONE_EMPTY)
+			if (stones[posX][j] > STONE_EMPTY)
 			{
 				break;
 			}
-
-#if defined(DEBUG)
-			drawRectangle(screen, i * STONE_W, j * STONE_H, STONE_W, STONE_H);
-			SDL_Flip(screen);
-			SDL_Delay(100);
-#endif
 		}
 
 		if (j > y2)
 		{
-			lineC.x1 = i;
-			lineC.x2 = i;
+			lineC.x1 = posX;
+			lineC.x2 = posX;
 			lineC.y1 = y1;
 			lineC.y2 = y2;
-#if defined(DEBUG)
-			SDL_Delay(100);
-#endif
+
 			return 1;
+		}
+
+		++i;
+
+		if ((posX + i * dir) > x2)
+		{
+			--posX;
+		}
+		else if ((posX + i * dir) < x1)
+		{
+			++posX;
+		}
+		else
+		{
+			posX += i * dir;
+			dir = -dir;
 		}
 	}
 
@@ -491,7 +579,7 @@ int boardCheckConnection(stone *A, stone *B)
 		lineB.x2 = i;
 	}
 
-	crossing = boardCheckVerticalIntersection(&lineA, &lineB);
+	crossing = boardCheckVerticalIntersection(&lineA, &lineB, A, B);
 
 	if (!crossing)
 	{
@@ -544,7 +632,7 @@ int boardCheckConnection(stone *A, stone *B)
 			lineB.y2 = j;
 		}
 
-		crossing = boardCheckHorizontalIntersection(&lineA, &lineB);
+		crossing = boardCheckHorizontalIntersection(&lineA, &lineB, A, B);
 	}
 
 	if (crossing)
