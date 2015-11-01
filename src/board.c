@@ -573,6 +573,11 @@ void boardDrawConnection()
 	line lineA;
 	line lineB;
 
+	int x1;
+	int y1;
+	int x2;
+	int y2;
+
 	if (lineC.y1 == lineC.y2) // lineC is a horizontal line.
 	{
 		lineA.x1 = stoneA.x;
@@ -602,9 +607,70 @@ void boardDrawConnection()
 		return;
 	}
 
-	drawRectangle(screen, BOARD_OFFSET_X + lineA.x1 * STONE_W - 1 + STONE_W/2 - lineA.x1, BOARD_OFFSET_Y + lineA.y1 * STONE_H + STONE_H/2 - lineA.y1, (lineA.x2 - lineA.x1) * STONE_W + 1 - (lineA.x2 - lineA.x1), (lineA.y2 - lineA.y1) * STONE_H + 1 - (lineA.y2 - lineA.y1));
-	drawRectangle(screen, BOARD_OFFSET_X + lineB.x1 * STONE_W - 1 + STONE_W/2 - lineB.x1, BOARD_OFFSET_Y + lineB.y1 * STONE_H + STONE_H/2 - lineB.y1, (lineB.x2 - lineB.x1) * STONE_W + 1 - (lineB.x2 - lineB.x1), (lineB.y2 - lineB.y1) * STONE_H + 1 - (lineB.y2 - lineB.y1));
-	drawRectangle(screen, BOARD_OFFSET_X + lineC.x1 * STONE_W - 1 + STONE_W/2 - lineC.x1, BOARD_OFFSET_Y + lineC.y1 * STONE_H + STONE_H/2 - lineC.y1, (lineC.x2 - lineC.x1) * STONE_W + 1 - (lineC.x2 - lineC.x1), (lineC.y2 - lineC.y1) * STONE_H + 1 - (lineC.y2 - lineC.y1));
+	// Line A.
+	x1 = lineA.x1 * STONE_W - 1 + STONE_W/2 - lineA.x1;
+	y1 = lineA.y1 * STONE_H + STONE_H/2 - lineA.y1;
+	x2 = (lineA.x2 - lineA.x1) * STONE_W + 1 - (lineA.x2 - lineA.x1);
+	y2 = (lineA.y2 - lineA.y1) * STONE_H + 1 - (lineA.y2 - lineA.y1);
+
+	// Drawing offset at the top of the screen.
+	if (y1 < STONE_H - STONE_H/3)
+	{
+		y2 -= (STONE_H - STONE_H/3) - y1;
+		y1 = STONE_H - STONE_H/3;
+	}
+	// Drawing offset at the bottom of the screen.
+	else if ((y1 + y2) > (BOARD_H - 1) * STONE_H - STONE_H/3)
+	{
+		y2 -= STONE_H/3;
+	}
+
+	x1 += BOARD_OFFSET_X;
+	y1 += BOARD_OFFSET_Y;
+	drawRectangle(screen, x1, y1, x2, y2);
+
+	// Line B.
+	x1 = lineB.x1 * STONE_W - 1 + STONE_W/2 - lineB.x1;
+	y1 = lineB.y1 * STONE_H + STONE_H/2 - lineB.y1;
+	x2 = (lineB.x2 - lineB.x1) * STONE_W + 1 - (lineB.x2 - lineB.x1);
+	y2 = (lineB.y2 - lineB.y1) * STONE_H + 1 - (lineB.y2 - lineB.y1);
+
+	// Drawing offset at the top of the screen.
+	if (y1 < STONE_H - STONE_H/3)
+	{
+		y2 -= (STONE_H - STONE_H/3) - y1;
+		y1 = STONE_H - STONE_H/3;
+	}
+	// Drawing offset at the bottom of the screen.
+	else if ((y1 + y2) > (BOARD_H - 1) * STONE_H - STONE_H/3)
+	{
+		y2 -= STONE_H/3;
+	}
+
+	x1 += BOARD_OFFSET_X;
+	y1 += BOARD_OFFSET_Y;
+	drawRectangle(screen, x1, y1, x2, y2);
+
+	// Line C.
+	x1 = lineC.x1 * STONE_W - 1 + STONE_W/2 - lineC.x1;
+	y1 = lineC.y1 * STONE_H + STONE_H/2 - lineC.y1;
+	x2 = (lineC.x2 - lineC.x1) * STONE_W + 1 - (lineC.x2 - lineC.x1);
+	y2 = (lineC.y2 - lineC.y1) * STONE_H + 1 - (lineC.y2 - lineC.y1);
+
+	// Drawing offset at the top of the screen.
+	if (y1 < STONE_H - STONE_H/3)
+	{
+		y1 = STONE_H - STONE_H/3;
+	}
+	// Drawing offset at the bottom of the screen.
+	else if ((y1 + y2) > (BOARD_H - 1) * STONE_H - STONE_H/3)
+	{
+		y1 -= STONE_H/3;
+	}
+
+	x1 += BOARD_OFFSET_X;
+	y1 += BOARD_OFFSET_Y;
+	drawRectangle(screen, x1, y1, x2, y2);
 }
 
 void boardLoad()
