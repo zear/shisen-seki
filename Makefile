@@ -67,7 +67,7 @@ ifeq ($(PLATFORM), gcw0)
 	cp default.gcw0.desktop	$(RELEASEDIR)
 	cp shisen.png		$(RELEASEDIR)
 	cp LICENSE.txt		$(RELEASEDIR)
-	mksquashfs		$(RELEASEDIR) ShisenSho.opk -all-root -noappend -no-exports -no-xattrs
+	mksquashfs		$(RELEASEDIR) Shisen-Seki.opk -all-root -noappend -no-exports -no-xattrs
 endif
 
 clean:

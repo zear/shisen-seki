@@ -17,10 +17,10 @@ void getConfigDir()
 
 	if(homeDir != NULL)
 	{
-		configDir = (char *)malloc(strlen(homeDir) + strlen("/.shisen") + 1);
+		configDir = (char *)malloc(strlen(homeDir) + strlen("/.shisen-seki") + 1);
 		if(configDir != NULL)
 		{
-			sprintf(configDir, "%s/.shisen", homeDir);
+			sprintf(configDir, "%s/.shisen-seki", homeDir);
 			mkdir(configDir, 0755); // create the directory if doesn't exist
 		}
 	}
