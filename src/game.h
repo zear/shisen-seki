@@ -19,6 +19,7 @@ extern int gameOver;
 
 void gameUnload();
 void gameLoad();
+void gamePrepareHiscore();
 void gameLogic();
 void gameGuiDraw();
 void gameDraw();

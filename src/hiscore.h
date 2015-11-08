@@ -20,6 +20,7 @@ extern scoreEntry scoreTable[MAX_MODES][MAX_SCORES];
 
 void hiscoreUnload();
 void hiscoreLoad();
+int hiscoreCheckScore(scoreEntry *entry, gameMode *mode, algorithm *algo);
 void hiscoreAddRecord(scoreEntry *entry, gameMode *mode, algorithm *algo);
 void hiscoreLogic();
 void hiscoreDraw();

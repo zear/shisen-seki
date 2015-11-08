@@ -34,6 +34,23 @@ void gameLoad()
 	enteringHiscore = 0;
 }
 
+void gamePrepareHiscore()
+{
+	int i;
+	scoreCursorPos = 0;
+
+	for (i = 0; i < SCORE_NAME_LEN - 1; ++i)
+	{
+		hiscoreEntry.name[i] = ' ';
+	}
+
+	hiscoreEntry.name[scoreCursorPos] = 'A';
+	hiscoreEntry.name[SCORE_NAME_LEN-1] = '\0';
+	hiscoreEntry.time = gameTime;
+
+	enteringHiscore = (hiscoreCheckScore(&hiscoreEntry, &currentGameMode, &currentAlgorithm) >= 0) ? 1 : 0;
+}
+
 void gameLogic()
 {
 	if (enteringHiscore)
@@ -113,10 +130,17 @@ void gameLogic()
 
 		if (keys[KEY_OK])
 		{
-			hiscoreEntry.time = gameTime;
-			hiscoreAddRecord(&hiscoreEntry, &currentGameMode, &currentAlgorithm);
-			storeHiscore();
-			programStateNew = STATE_HISCORE;
+			int i;
+
+			for (i = 0; i < SCORE_NAME_LEN - 1; ++i)
+			{
+				if (hiscoreEntry.name[i] != ' ') // Check if hi-score name isn't empty.
+				{
+					hiscoreAddRecord(&hiscoreEntry, &currentGameMode, &currentAlgorithm);
+					storeHiscore();
+					programStateNew = STATE_HISCORE;
+				}
+			}
 		}
 
 		if (keys[KEY_CANCEL])
@@ -139,28 +163,7 @@ void gameLogic()
 		{
 			keys[KEY_BACK] = 0;
 
-			if (gameOver)
-			{
-				if (stonesLeft)
-				{
-					programStateNew = STATE_TITLE;
-				}
-				else
-				{
-					int i;
-					enteringHiscore = 1;
-					scoreCursorPos = 0;
-
-					for (i = 0; i < SCORE_NAME_LEN - 1; ++i)
-					{
-						hiscoreEntry.name[i] = ' ';
-					}
-
-					hiscoreEntry.name[scoreCursorPos] = 'A';
-					hiscoreEntry.name[SCORE_NAME_LEN-1] = '\n';
-				}
-			}
-			else
+			if (!enteringHiscore)
 			{
 				programStateNew = STATE_TITLE;
 			}
@@ -214,23 +217,9 @@ void gameLogic()
 
 			if (gameOver)
 			{
-				if (stonesLeft)
+				if (!enteringHiscore)
 				{
 					programStateNew = STATE_TITLE;
-				}
-				else
-				{
-					int i;
-					enteringHiscore = 1;
-					scoreCursorPos = 0;
-
-					for (i = 0; i < SCORE_NAME_LEN - 1; ++i)
-					{
-						hiscoreEntry.name[i] = ' ';
-					}
-
-					hiscoreEntry.name[scoreCursorPos] = 'A';
-					hiscoreEntry.name[SCORE_NAME_LEN-1] = '\n';
 				}
 			}
 			else
@@ -273,55 +262,64 @@ void gameLogic()
 void gameGuiDraw()
 {
 	char txtTime[50];
-	char txtStones[50];
-	char txtGameOver[50];
-	char txtBottomBar[100];
-	int txtPositionY;
 
-	if (gameOver)
+	snprintf(txtTime, 10, "%lu:%02lu:%02lu", gameTime/FPS/3600 > 99 ? 99 : gameTime/FPS/3600, gameTime/FPS/60%60, gameTime/FPS%60);
+
+	if (gameOver && !stonesLeft)
 	{
 		if (enteringHiscore)
 		{
 			int i;
+			int txtPositionY = SCREEN_H/2 - (gameFontRegular.h + gameFontRegular.leading)/2 * 8;
+			int place;
 			char txtHiscore[SCORE_NAME_LEN];
+			char txtMessage[50];
+			char txtMessage2[50];
+
+			place = hiscoreCheckScore(&hiscoreEntry, &currentGameMode, &currentAlgorithm) + 1;
 
 			strcpy(txtHiscore, hiscoreEntry.name);
+			sprintf(txtMessage, "Your time of %s", txtTime);
+			sprintf(txtMessage2, "gives you the %d%s place.", place, place == 1 ? "st" : (place == 2 ? "nd" : (place == 3 ? "rd" : "th")));
 
-			dTextCentered(&gameFontRegular, "Enter your name:", 40, SHADOW_OUTLINE);
+			dTextCentered(&gameFontRegular, "Congratulations!", txtPositionY, SHADOW_OUTLINE);
+			dTextCentered(&gameFontRegular, txtMessage, txtPositionY + (gameFontRegular.h + gameFontRegular.leading) * 2, SHADOW_OUTLINE);
+			dTextCentered(&gameFontRegular, txtMessage2, txtPositionY + (gameFontRegular.h + gameFontRegular.leading) * 3, SHADOW_OUTLINE);
+			dTextCentered(&gameFontRegular, "Enter your initials:", txtPositionY + (gameFontRegular.h + gameFontRegular.leading) * 5, SHADOW_OUTLINE);
 
-			dTextCentered(&gameFontRegular, txtHiscore, SCREEN_H/2 - (gameFontRegular.h + gameFontRegular.leading)/2, SHADOW_OUTLINE);
+			dTextCentered(&gameFontRegular, txtHiscore, txtPositionY + (gameFontRegular.h + gameFontRegular.leading) * 7, SHADOW_OUTLINE);
 
 			for (i = 0; i < SCORE_NAME_LEN - 1; ++i)
 			{
 				txtHiscore[i] = (i == scoreCursorPos) ? (hiscoreEntry.name[scoreCursorPos] == ' ' ? '_' : hiscoreEntry.name[scoreCursorPos]) : ' ';
 			}
+			txtHiscore[SCORE_NAME_LEN-1] = '\0';
 
-			dTextCentered(&gameFontSelected, txtHiscore, SCREEN_H/2 - (gameFontSelected.h + gameFontSelected.leading)/2, SHADOW_OUTLINE);
+			dTextCentered(&gameFontSelected, txtHiscore, txtPositionY + (gameFontSelected.h + gameFontSelected.leading) * 7, SHADOW_OUTLINE);
 		}
 		else
 		{
-			if (stonesLeft)
-			{
-				sprintf(txtGameOver, "No moves left!");
-			}
-			else
-			{
-				sprintf(txtGameOver, "Congratulations!");
-			}
+			int txtPositionY = SCREEN_H/2 - (gameFontRegular.h + gameFontRegular.leading)/2 - (gameFontRegular.h + gameFontRegular.leading);
+			char txtMessage[50];
+
+			sprintf(txtMessage, "Your time: %s\n", txtTime);
+
+			dTextCentered(&gameFontRegular, "Well done!", txtPositionY, SHADOW_OUTLINE);
+			dTextCentered(&gameFontRegular, txtMessage, txtPositionY + (gameFontRegular.h + gameFontRegular.leading) * 2, SHADOW_OUTLINE);
 		}
 	}
-
-	snprintf(txtTime, 15, "Time: %lu:%02lu:%02lu", gameTime/FPS/3600 > 99 ? 99 : gameTime/FPS/3600, gameTime/FPS/60%60, gameTime/FPS%60);
-	sprintf(txtStones, "Stones Left: %d", stonesLeft);
-	sprintf(txtBottomBar, "%s  Stones Left: %d", txtTime, stonesLeft);
-
-	txtPositionY = SCREEN_H - (gameFontShadow.h + gameFontShadow.leading);
-
-	if (gameOver && !stonesLeft && !enteringHiscore)
+	else
 	{
-		dTextCentered(&gameFontRegular, txtGameOver, SCREEN_H/2 - (gameFontRegular.h + gameFontRegular.leading)/2, SHADOW_OUTLINE);
+		char txtStones[50];
+		char txtGameOver[50];
+		char txtBottomBar[100];
+
+		sprintf(txtStones, "Stones Left: %d", stonesLeft);
+		sprintf(txtBottomBar, "Time: %s  Stones Left: %d", txtTime, stonesLeft);
+
+		strcpy(txtGameOver, "No moves left!");
+		dTextCentered(&gameFontShadow, (gameOver && stonesLeft) ? txtGameOver : txtBottomBar, SCREEN_H - (gameFontShadow.h + gameFontShadow.leading), SHADOW_NONE);
 	}
-	dTextCentered(&gameFontShadow, (gameOver && stonesLeft) ? txtGameOver : txtBottomBar, txtPositionY, SHADOW_NONE);
 }
 
 void gameDraw()

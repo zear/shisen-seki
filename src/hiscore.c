@@ -26,6 +26,62 @@ void hiscoreLoad()
 	hiscorePage = 0;
 }
 
+int hiscoreCheckScore(scoreEntry *entry, gameMode *mode, algorithm *algo)
+{
+	int i;
+	int place = MAX_SCORES;
+	int modeId = -1;
+
+	if (entry->time <= 0) // Invalid record.
+	{
+		return -1;
+	}
+
+	if (*mode == GAME_MODE_CLASSIC)
+	{
+		if (*algo == ALGO_RANDOM)
+		{
+			modeId = 0;
+		}
+		else if (*algo == ALGO_REVERSE)
+		{
+			modeId = 1;
+		}
+	}
+	else if (*mode == GAME_MODE_GRAVITY)
+	{
+		if (*algo == ALGO_RANDOM)
+		{
+			modeId = 2;
+		}
+		else if (*algo == ALGO_REVERSE)
+		{
+			modeId = 3;
+		}
+	}
+
+	if (modeId < 0 || modeId >= MAX_MODES)
+	{
+		return -1;
+	}
+
+	for (i = MAX_SCORES - 1; i >= 0; --i)
+	{
+		if ((entry->time < scoreTable[modeId][i].time) || scoreTable[modeId][i].time <= 0)
+		{
+			place = i;
+			continue;
+		}
+	}
+
+	if (place >= MAX_SCORES) // Score not high enough for hi-score entry.
+	{
+		return -1;
+	}
+
+	return place;
+}
+
 void hiscoreAddRecord(scoreEntry *entry, gameMode *mode, algorithm *algo)
 {
 	int i;

@@ -316,8 +316,14 @@ void boardSelectStone(int x, int y)
 
 			if (!boardCheckAvailableMoves())
 			{
-				gameOver = 1;
 				crossing = 0;
+				gameOver = 1;
+
+				if (!stonesLeft)
+				{
+					gamePrepareHiscore();
+				}
+
 			}
 
 			lineC = tmpLineC;
