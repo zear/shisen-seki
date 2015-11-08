@@ -132,11 +132,11 @@ void hiscoreDraw()
 
 		if (scoreTable[hiscorePage][i].time > 0)
 		{
-			sprintf(txtEntry, "%d.  %.3s        %02lu:%02lu", i+1, scoreTable[hiscorePage][i].name, scoreTable[hiscorePage][i].time/FPS/60, scoreTable[hiscorePage][i].time/FPS%60);
+			sprintf(txtEntry, "%d.  %.3s        %02lu:%02lu:%02lu", i+1, scoreTable[hiscorePage][i].name, scoreTable[hiscorePage][i].time/FPS/3600 > 99 ? 99 : scoreTable[hiscorePage][i].time/FPS/3600, scoreTable[hiscorePage][i].time/FPS/60%60, scoreTable[hiscorePage][i].time/FPS%60);
 		}
 		else
 		{
-			sprintf(txtEntry, "%d.  n/a        --:--", i+1);
+			sprintf(txtEntry, "%d.  n/a        --:--:--", i+1);
 		}
 		dTextCentered(&gameFontRegular, txtEntry, 80 + (gameFontRegular.h + gameFontRegular.leading) * i, SHADOW_DROP);
 	}

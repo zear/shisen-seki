@@ -310,9 +310,10 @@ void gameGuiDraw()
 			}
 		}
 	}
-	sprintf(txtTime, "Time: %02lu:%02lu", gameTime/FPS/60, gameTime/FPS%60);
+
+	snprintf(txtTime, 15, "Time: %lu:%02lu:%02lu", gameTime/FPS/3600 > 99 ? 99 : gameTime/FPS/3600, gameTime/FPS/60%60, gameTime/FPS%60);
 	sprintf(txtStones, "Stones Left: %d", stonesLeft);
-	sprintf(txtBottomBar, "Time: %02lu:%02lu  Stones Left: %d", gameTime/FPS/60, gameTime/FPS%60, stonesLeft);
+	sprintf(txtBottomBar, "%s  Stones Left: %d", txtTime, stonesLeft);
 
 	txtPositionY = SCREEN_H - (gameFontShadow.h + gameFontShadow.leading);
 
