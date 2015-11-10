@@ -139,6 +139,7 @@ void gameLogic()
 					hiscoreAddRecord(&hiscoreEntry, &currentGameMode, &currentAlgorithm);
 					storeHiscore();
 					programStateNew = STATE_HISCORE;
+					break;
 				}
 			}
 		}
