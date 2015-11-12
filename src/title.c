@@ -251,7 +251,7 @@ void titleLogic()
 				--menuSel;
 			}
 
-			if(menuSel < (savePresent ? 0 : 1))
+			if(menuSel < (curMenu == &menuMain ? (savePresent ? 0 : 1) : 0))
 			{
 				menuSel = curMenu->length - 1;
 			}
@@ -270,7 +270,7 @@ void titleLogic()
 
 			if(menuSel > curMenu->length - 1)
 			{
-				menuSel = savePresent ? 0 : 1;
+				menuSel = curMenu == &menuMain ? (savePresent ? 0 : 1) : 0;
 			}
 		}
 	}
@@ -376,7 +376,7 @@ void titleDraw()
 				}
 			}
 
-			menuDraw(curMenu, &gameFontRegular, &gameFontSelected, menuSel, savePresent ? 0 : 1, 80);
+			menuDraw(curMenu, &gameFontRegular, &gameFontSelected, menuSel, curMenu == &menuMain ? (savePresent ? 0 : 1) : 0, 80);
 		}
 
 		dTextCentered(&gameFontSelected, "(c) 2015 Artur Rojek", SCREEN_H - (gameFontSelected.h + gameFontSelected.leading), SHADOW_DROP);

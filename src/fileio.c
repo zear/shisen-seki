@@ -177,6 +177,7 @@ int getBoard(int probe)
 	}
 	fread(&currentGameMode, sizeof(currentGameMode), 1, f);
 	fread(&gameTime, sizeof(gameTime), 1, f);
+	fread(&practice, sizeof(practice), 1, f);
 
 	fclose(f);
 	free(save);
@@ -235,6 +236,7 @@ void storeBoard()
 	}
 	fwrite(&currentGameMode, sizeof(currentGameMode), 1, f);
 	fwrite(&gameTime, sizeof(gameTime), 1, f);
+	fwrite(&practice, sizeof(practice), 1, f);
 
 	fclose(f);
 	free(save);
