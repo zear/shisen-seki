@@ -11,7 +11,7 @@
 
 algorithm currentAlgorithm = ALGO_REVERSE;
 tileset stonesTileset;
-stoneType **stones;
+stone **stones;
 stone stoneA;
 stone stoneB;
 line lineC;
@@ -21,6 +21,25 @@ int cursorX = 1;
 int cursorY = 1;
 int generating;
 int checkingMoves;
+
+void boardSetAlpha(int alpha)
+{
+	int i;
+	int j;
+
+	if (!stones)
+	{
+		return;
+	}
+
+	for (i = 0; i < BOARD_W; ++i)
+	{
+		for (j = 0; j < BOARD_H; ++j)
+		{
+			stones[i][j].alpha = alpha % 256;
+		}
+	}
+}
 
 int boardStoneSurrounded(stone *st)
 {
@@ -35,16 +54,17 @@ int boardStoneSurrounded(stone *st)
 	}
 
 	// Check board boundaries.
-	n = (st->y <= 2) ? 1 : stones[st->x][st->y-1];
-	e = (st->x >= BOARD_W - 2) ? 1 : stones[st->x+1][st->y];
-	s = (st->y >= BOARD_H - 2) ? 1 : stones[st->x][st->y+1];
-	w = (st->x <= 2) ? 1 : stones[st->x-1][st->y];
+	n = (st->y <= 2) ? 1 : stones[st->x][st->y-1].type;
+	e = (st->x >= BOARD_W - 2) ? 1 : stones[st->x+1][st->y].type;
+	s = (st->y >= BOARD_H - 2) ? 1 : stones[st->x][st->y+1].type;
+	w = (st->x <= 2) ? 1 : stones[st->x-1][st->y].type;
 
 	return (n && e && s && w) ? 1 : 0;
 }
 
 int boardCheckAvailableMoves()
 {
+	int moveExists = 0;
 	int i;
 	int j;
 	int k;
@@ -57,6 +77,11 @@ int boardCheckAvailableMoves()
 
 	checkingMoves = 1;
 
+	if (practice)
+	{
+		boardSetAlpha(128);
+	}
+
 	for (i = 1; i < BOARD_W - 1; ++i)
 	{
 		for (j = 1; j < BOARD_H - 1; ++j)
@@ -64,7 +89,7 @@ int boardCheckAvailableMoves()
 			int stoneNum;
 			stone stoneA;
 
-			stoneNum = stones[i][j];
+			stoneNum = stones[i][j].type;
 
 			if (stoneNum == STONE_EMPTY)
 			{
@@ -81,7 +106,7 @@ int boardCheckAvailableMoves()
 				{
 					stone stoneB;
 
-					if (stones[k][l] != stoneNum)
+					if (stones[k][l].type != stoneNum)
 					{
 						continue;
 					}
@@ -92,11 +117,19 @@ int boardCheckAvailableMoves()
 
 					if (boardCheckConnection(&stoneA, &stoneB))
 					{
-						stones[i][j] = stoneNum;
-						stones[k][l] = stoneNum;
+						stones[i][j].type = stoneNum;
+						stones[k][l].type = stoneNum;
 
-						checkingMoves = 0;
-						return 1;
+						stones[i][j].alpha = 255;
+						stones[k][l].alpha = 255;
+
+						moveExists = 1;
+
+						if (!practice)
+						{
+							checkingMoves = 0;
+							return 1;
+						}
 					}
 				}
 			}
@@ -104,7 +137,9 @@ int boardCheckAvailableMoves()
 	}
 
 	checkingMoves = 0;
-	return 0;
+
+	crossing = moveExists;
+	return moveExists;
 }
 
 void boardApplyGravity()
@@ -121,23 +156,23 @@ void boardApplyGravity()
 	{
 		for (j = BOARD_H - 3; j > 0; --j)
 		{
-			if (stones[i][j] != STONE_EMPTY)
+			if (stones[i][j].type != STONE_EMPTY)
 			{
 				int k;
 				stone lastStone;
 				lastStone.x = i;
 				lastStone.y = j;
-				lastStone.type = stones[i][j];
+				lastStone.type = stones[i][j].type;
 
 				for (k = j+1; k < BOARD_H - 1; ++k)
 				{
-					if (stones[i][k] != STONE_EMPTY)
+					if (stones[i][k].type != STONE_EMPTY)
 					{
 						break;
 					}
 
-					stones[i][k] = lastStone.type;
-					stones[lastStone.x][lastStone.y] = STONE_EMPTY;
+					stones[i][k].type = lastStone.type;
+					stones[lastStone.x][lastStone.y].type = STONE_EMPTY;
 					lastStone.y = k;
 				}
 			}
@@ -169,7 +204,7 @@ void boardGenerate()
 				{
 					if (i == 0 || j == 0 || i == BOARD_W - 1 || j == BOARD_H - 1)
 					{
-						stones[i][j] = STONE_EMPTY;
+						stones[i][j].type = STONE_EMPTY;
 					}
 					else
 					{
@@ -185,7 +220,7 @@ void boardGenerate()
 								++pool[stoneNum - 1];
 								draw = 0;
 
-								stones[i][j] = stoneNum;
+								stones[i][j].type = stoneNum;
 							}
 						}
 					}
@@ -219,10 +254,10 @@ void boardGenerate()
 					x = 1 + rand() % (BOARD_W - 2);
 					y = 1 + rand() % (BOARD_H - 2);
 
-					if (stones[x][y] == STONE_EMPTY)
+					if (stones[x][y].type == STONE_EMPTY)
 					{
 						stoneA.type = stoneNum;
-						stones[x][y] = stoneA.type;
+						stones[x][y].type = stoneA.type;
 						stoneA.x = x;
 						stoneA.y = y;
 
@@ -237,11 +272,11 @@ void boardGenerate()
 					x = 1 + rand() % (BOARD_W - 2);
 					y = 1 + rand() % (BOARD_H - 2);
 
-					if (stones[x][y] == STONE_EMPTY)
+					if (stones[x][y].type == STONE_EMPTY)
 					{
 						stoneA.type = stoneNum;
 						stoneB.type = stoneNum;
-						stones[x][y] = stoneB.type;
+						stones[x][y].type = stoneB.type;
 						stoneB.x = x;
 						stoneB.y = y;
 
@@ -249,8 +284,8 @@ void boardGenerate()
 
 						if (match)
 						{
-							stones[stoneA.x][stoneA.y] = stoneNum;
-							stones[stoneB.x][stoneB.y] = stoneNum;
+							stones[stoneA.x][stoneA.y].type = stoneNum;
+							stones[stoneB.x][stoneB.y].type = stoneNum;
 						}
 						else
 						{
@@ -260,7 +295,7 @@ void boardGenerate()
 							}
 							else
 							{
-								stones[stoneB.x][stoneB.y] = STONE_EMPTY;
+								stones[stoneB.x][stoneB.y].type = STONE_EMPTY;
 							}
 						}
 					}
@@ -287,7 +322,7 @@ void boardSelectStone(int x, int y)
 {
 	crossing = 0;
 
-	if (stones[x][y] == STONE_EMPTY)
+	if (stones[x][y].type == STONE_EMPTY)
 	{
 		return;
 	}
@@ -296,13 +331,13 @@ void boardSelectStone(int x, int y)
 	{
 		stoneA.x = x;
 		stoneA.y = y;
-		stoneA.type = stones[x][y];
+		stoneA.type = stones[x][y].type;
 	}
 	else if (x != stoneA.x || y != stoneA.y)
 	{
 		stoneB.x = x;
 		stoneB.y = y;
-		stoneB.type = stones[x][y];
+		stoneB.type = stones[x][y].type;
 
 		if (!boardCheckConnection(&stoneA, &stoneB))
 		{
@@ -395,7 +430,7 @@ int boardCheckHorizontalIntersection(line *A, line *B, stone *stoneA, stone *sto
 	{
 		for (i = x1; i <= x2; ++i)
 		{
-			if (stones[i][posY] > STONE_EMPTY)
+			if (stones[i][posY].type > STONE_EMPTY)
 			{
 				break;
 			}
@@ -479,7 +514,7 @@ int boardCheckVerticalIntersection(line *A, line *B, stone *stoneA, stone *stone
 	{
 		for (j = y1; j <= y2; ++j)
 		{
-			if (stones[posX][j] > STONE_EMPTY)
+			if (stones[posX][j].type > STONE_EMPTY)
 			{
 				break;
 			}
@@ -533,8 +568,8 @@ int boardCheckConnection(stone *A, stone *B)
 		return 0;
 	}
 
-	stones[A->x][A->y] = STONE_EMPTY;
-	stones[B->x][B->y] = STONE_EMPTY;
+	stones[A->x][A->y].type = STONE_EMPTY;
+	stones[B->x][B->y].type = STONE_EMPTY;
 
 	// Horizontal field of view.
 	lineA.x1 = A->x;
@@ -544,7 +579,7 @@ int boardCheckConnection(stone *A, stone *B)
 
 	for (i = A->x, j = A->y; i >= 0; --i)
 	{
-		if (stones[i][j] != STONE_EMPTY)
+		if (stones[i][j].type != STONE_EMPTY)
 		{
 			break;
 		}
@@ -553,7 +588,7 @@ int boardCheckConnection(stone *A, stone *B)
 	}
 	for (i = A->x, j = A->y; i < BOARD_W; ++i)
 	{
-		if (stones[i][j] != STONE_EMPTY)
+		if (stones[i][j].type != STONE_EMPTY)
 		{
 			break;
 		}
@@ -568,7 +603,7 @@ int boardCheckConnection(stone *A, stone *B)
 
 	for (i = B->x, j = B->y; i >= 0; --i)
 	{
-		if (stones[i][j] != STONE_EMPTY)
+		if (stones[i][j].type != STONE_EMPTY)
 		{
 			break;
 		}
@@ -577,7 +612,7 @@ int boardCheckConnection(stone *A, stone *B)
 	}
 	for (i = B->x, j = B->y; i < BOARD_W; ++i)
 	{
-		if (stones[i][j] != STONE_EMPTY)
+		if (stones[i][j].type != STONE_EMPTY)
 		{
 			break;
 		}
@@ -597,7 +632,7 @@ int boardCheckConnection(stone *A, stone *B)
 
 		for (i = A->x, j = A->y; j >= 0; --j)
 		{
-			if (stones[i][j] != STONE_EMPTY)
+			if (stones[i][j].type != STONE_EMPTY)
 			{
 				break;
 			}
@@ -606,7 +641,7 @@ int boardCheckConnection(stone *A, stone *B)
 		}
 		for (i = A->x, j = A->y; j < BOARD_H; ++j)
 		{
-			if (stones[i][j] != STONE_EMPTY)
+			if (stones[i][j].type != STONE_EMPTY)
 			{
 				break;
 			}
@@ -621,7 +656,7 @@ int boardCheckConnection(stone *A, stone *B)
 
 		for (i = B->x, j = B->y; j >= 0; --j)
 		{
-			if (stones[i][j] != STONE_EMPTY)
+			if (stones[i][j].type != STONE_EMPTY)
 			{
 				break;
 			}
@@ -630,7 +665,7 @@ int boardCheckConnection(stone *A, stone *B)
 		}
 		for (i = B->x, j = B->y; j < BOARD_H; ++j)
 		{
-			if (stones[i][j] != STONE_EMPTY)
+			if (stones[i][j].type != STONE_EMPTY)
 			{
 				break;
 			}
@@ -655,8 +690,8 @@ int boardCheckConnection(stone *A, stone *B)
 	}
 	else
 	{
-		stones[A->x][A->y] = A->type;
-		stones[B->x][B->y] = B->type;
+		stones[A->x][A->y].type = A->type;
+		stones[B->x][B->y].type = B->type;
 	}
 
 	return 0;
@@ -664,6 +699,7 @@ int boardCheckConnection(stone *A, stone *B)
 
 void boardDrawConnection()
 {
+	int rcolor = SDL_MapRGB(screen->format, 0, 0, 255);
 	line lineA;
 	line lineB;
 
@@ -721,7 +757,7 @@ void boardDrawConnection()
 
 	x1 += BOARD_OFFSET_X;
 	y1 += BOARD_OFFSET_Y;
-	drawRectangle(screen, x1, y1, x2, y2);
+	drawRectangle(screen, x1, y1, x2, y2, rcolor);
 
 	// Line B.
 	x1 = lineB.x1 * STONE_W - 1 + STONE_W/2 - lineB.x1;
@@ -743,7 +779,7 @@ void boardDrawConnection()
 
 	x1 += BOARD_OFFSET_X;
 	y1 += BOARD_OFFSET_Y;
-	drawRectangle(screen, x1, y1, x2, y2);
+	drawRectangle(screen, x1, y1, x2, y2, rcolor);
 
 	// Line C.
 	x1 = lineC.x1 * STONE_W - 1 + STONE_W/2 - lineC.x1;
@@ -764,7 +800,7 @@ void boardDrawConnection()
 
 	x1 += BOARD_OFFSET_X;
 	y1 += BOARD_OFFSET_Y;
-	drawRectangle(screen, x1, y1, x2, y2);
+	drawRectangle(screen, x1, y1, x2, y2, rcolor);
 }
 
 void boardLoad()
@@ -778,21 +814,23 @@ void boardLoad()
 
 	tilesetLoad(&stonesTileset, "data/gfx/stones.bmp", STONE_W, STONE_H, 9, STONE_COUNT);
 
-	stones = malloc(sizeof(int*) * BOARD_W);
+	stones = malloc(sizeof(stone*) * BOARD_W);
 	if (!stones)
 	{
 		return;
 	}
 	for (i = 0; i < BOARD_W; ++i)
 	{
-		stones[i] = malloc(sizeof(int) * BOARD_H);
+		stones[i] = malloc(sizeof(stone) * BOARD_H);
 		if (!stones[i])
 		{
 			return;
 		}
 
-		memset(stones[i], 0, sizeof(int) * BOARD_H);
+		memset(stones[i], 0, sizeof(stone) * BOARD_H);
 	}
+
+	boardSetAlpha(255);
 
 	gameOver = 0;
 
@@ -818,6 +856,11 @@ void boardLoad()
 		boardGenerate();
 		cursorX = 1;
 		cursorY = 1;
+
+		if (practice)
+		{
+			boardCheckAvailableMoves();
+		}
 	}
 
 	crossing = 0;
@@ -860,9 +903,10 @@ void boardDraw()
 	{
 		for (j = 0, y = 0; y < BOARD_H; j+=STONE_H, ++y)
 		{
-			if (stones[x][y] > 0)
+			if (stones[x][y].type > 0)
 			{
-				drawImage(stonesTileset.image, &stonesTileset.clip[stones[x][y] - 1], screen, BOARD_OFFSET_X + i - x, BOARD_OFFSET_Y + j - y);
+				SDL_SetAlpha(stonesTileset.image, SDL_SRCALPHA, stones[x][y].alpha);
+				drawImage(stonesTileset.image, &stonesTileset.clip[stones[x][y].type - 1], screen, BOARD_OFFSET_X + i - x, BOARD_OFFSET_Y + j - y);
 			}
 		}
 	}
@@ -874,17 +918,19 @@ void boardDraw()
 
 	if (!gameOver)
 	{
-		drawRectangle(screen, BOARD_OFFSET_X + cursorX * STONE_W - 1 - cursorX, BOARD_OFFSET_Y + cursorY * STONE_H - 1 - cursorY, STONE_W + 2, STONE_H + 2);
-		drawRectangle(screen, BOARD_OFFSET_X + cursorX * STONE_W - cursorX, BOARD_OFFSET_Y + cursorY * STONE_H - cursorY, STONE_W, STONE_H);
+		int rcolor = SDL_MapRGB(screen->format, 0, 0, 255);
+
+		drawRectangle(screen, BOARD_OFFSET_X + cursorX * STONE_W - 1 - cursorX, BOARD_OFFSET_Y + cursorY * STONE_H - 1 - cursorY, STONE_W + 2, STONE_H + 2, rcolor);
+		drawRectangle(screen, BOARD_OFFSET_X + cursorX * STONE_W - cursorX, BOARD_OFFSET_Y + cursorY * STONE_H - cursorY, STONE_W, STONE_H, rcolor);
 		if (stoneA.type != STONE_EMPTY)
 		{
-			drawRectangle(screen, BOARD_OFFSET_X + stoneA.x * STONE_W - 1 - stoneA.x, BOARD_OFFSET_Y + stoneA.y * STONE_H - 1 - stoneA.y, STONE_W + 2, STONE_H + 2);
-			drawRectangle(screen, BOARD_OFFSET_X + stoneA.x * STONE_W - stoneA.x, BOARD_OFFSET_Y + stoneA.y * STONE_H - stoneA.y, STONE_W, STONE_H);
+			drawRectangle(screen, BOARD_OFFSET_X + stoneA.x * STONE_W - 1 - stoneA.x, BOARD_OFFSET_Y + stoneA.y * STONE_H - 1 - stoneA.y, STONE_W + 2, STONE_H + 2, rcolor);
+			drawRectangle(screen, BOARD_OFFSET_X + stoneA.x * STONE_W - stoneA.x, BOARD_OFFSET_Y + stoneA.y * STONE_H - stoneA.y, STONE_W, STONE_H, rcolor);
 		}
 		if (stoneB.type != STONE_EMPTY)
 		{
-			drawRectangle(screen, BOARD_OFFSET_X + stoneB.x * STONE_W - 1 - stoneB.x, BOARD_OFFSET_Y + stoneB.y * STONE_H - 1 - stoneB.y, STONE_W + 2, STONE_H + 2);
-			drawRectangle(screen, BOARD_OFFSET_X + stoneB.x * STONE_W - stoneB.x, BOARD_OFFSET_Y + stoneB.y * STONE_H - stoneB.y, STONE_W, STONE_H);
+			drawRectangle(screen, BOARD_OFFSET_X + stoneB.x * STONE_W - 1 - stoneB.x, BOARD_OFFSET_Y + stoneB.y * STONE_H - 1 - stoneB.y, STONE_W + 2, STONE_H + 2, rcolor);
+			drawRectangle(screen, BOARD_OFFSET_X + stoneB.x * STONE_W - stoneB.x, BOARD_OFFSET_Y + stoneB.y * STONE_H - stoneB.y, STONE_W, STONE_H, rcolor);
 		}
 	}
 }

@@ -10,6 +10,7 @@
 #include "states.h"
 #include "video.h"
 
+int practice = 1;
 int continueGame;
 gameMode newGameMode = GAME_MODE_CLASSIC;
 gameMode currentGameMode;

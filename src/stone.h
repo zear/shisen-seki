@@ -46,6 +46,7 @@ typedef enum stoneType
 typedef struct stone
 {
 	stoneType type;
+	int alpha;
 	int x;
 	int y;
 } stone;

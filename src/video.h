@@ -18,7 +18,7 @@ void deinitSDL();
 SDL_Surface *loadImage(char *fileName);
 void clipImage(SDL_Rect *source, int tileWidth, int tileHeight, int rowLength, int numOfTiles);
 void drawImage(SDL_Surface *source, SDL_Rect *clip, SDL_Surface *destination, int x, int y);
-void drawRectangle(SDL_Surface *source, int x, int y, int w, int h);
+void drawRectangle(SDL_Surface *source, int x, int y, int w, int h, int color);
 int frameLimiter();
 void blinkTimersTick();
 void clearScreen();

@@ -115,38 +115,38 @@ void drawImage(SDL_Surface *source, SDL_Rect *clip, SDL_Surface *destination, in
 	SDL_BlitSurface(source, clip, destination, &offset);
 }
 
-void drawRectangle(SDL_Surface *source, int x, int y, int w, int h)
+void drawRectangle(SDL_Surface *source, int x, int y, int w, int h, int color)
 {
 	SDL_Rect r;
-	int rcolor = SDL_MapRGB(screen->format, 0, 0, 255);
+/*	int rcolor = SDL_MapRGB(screen->format, 0, 0, 255);*/
 
 	// Top wall.
 	r.x = x;
 	r.y = y;
 	r.w = w;
 	r.h = 1;
-	SDL_FillRect(source, &r, rcolor);
+	SDL_FillRect(source, &r, color);
 
 	// Bottom wall.
 	r.x = x;
 	r.y = y + h - 1;
 	r.w = w;
 	r.h = 1;
-	SDL_FillRect(source, &r, rcolor);
+	SDL_FillRect(source, &r, color);
 
 	// Left wall.
 	r.x = x;
 	r.y = y;
 	r.w = 1;
 	r.h = h;
-	SDL_FillRect(source, &r, rcolor);
+	SDL_FillRect(source, &r, color);
 
 	// Right wall.
 	r.x = x + w - 1;
 	r.y = y;
 	r.w = 1;
 	r.h = h;
-	SDL_FillRect(source, &r, rcolor);
+	SDL_FillRect(source, &r, color);
 }
 
 int frameLimiter()

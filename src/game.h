@@ -11,6 +11,7 @@ typedef enum gameMode
 	GAME_MODE_COUNT
 } gameMode;
 
+extern int practice;
 extern unsigned long gameTime;
 extern int continueGame;
 extern gameMode newGameMode;

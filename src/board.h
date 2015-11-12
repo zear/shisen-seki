@@ -32,7 +32,7 @@ typedef struct line
 } line;
 
 extern algorithm currentAlgorithm;
-extern stoneType **stones;
+extern stone **stones;
 extern stone stoneA;
 extern stone stoneB;
 extern int stonesLeft;

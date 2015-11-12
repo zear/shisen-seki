@@ -167,9 +167,9 @@ int getBoard(int probe)
 			uint8_t value;
 
 			fread(&value, 1, sizeof(uint8_t), f);
-			stones[x][y] = value ^ index;
+			stones[x][y].type = value ^ index;
 
-			if (stones[x][y] > 0)
+			if (stones[x][y].type > 0)
 			{
 				++stonesLeft;
 			}
@@ -229,7 +229,7 @@ void storeBoard()
 		for (j = 0, y = 0; y < BOARD_H; j+=STONE_H, ++y)
 		{
 			int index = y * BOARD_W + x;
-			uint8_t value = stones[x][y] ^ index;
+			uint8_t value = stones[x][y].type ^ index;
 			fwrite(&value, 1, sizeof(uint8_t), f);
 		}
 	}
