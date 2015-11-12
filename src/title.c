@@ -8,11 +8,11 @@
 #include "game.h"
 #include "input.h"
 #include "main.h"
+#include "menu.h"
 #include "states.h"
 #include "video.h"
 
-#define MENU_ITEM_COUNT	8
-
+menuContainer *curMenu;
 int menuSel;
 int displayHelp;
 int displayCredits;
@@ -34,22 +34,16 @@ void titleLoad()
 	}
 
 	savePresent = getBoard(1);
-
-	if (savePresent)
-	{
-		menuSel = 0;
-	}
-	else
-	{
-		menuSel = 1;
-	}
-
+	menuSel = savePresent ? 0 : 1;
 	bgdMusic = loadMusic(bgdMusic, "data/music/bgd01.mp3");
 
 	if(bgdMusic)
 	{
 		playMusic(bgdMusic);
 	}
+
+	menuLoad();
+	curMenu = &menuMain;
 }
 
 void titleLogic()
@@ -85,7 +79,15 @@ void titleLogic()
 		}
 		else
 		{
-			menuSel = MENU_ITEM_COUNT-1;
+			if (curMenu == &menuNewGame)
+			{
+				curMenu = &menuMain;
+				menuSel = savePresent ? 0 : 1;
+			}
+			else
+			{
+				menuSel = curMenu->length - 1;
+			}
 		}
 	}
 	if(keys[KEY_OK])
@@ -110,9 +112,16 @@ void titleLogic()
 		}
 		else
 		{
-			switch (menuSel)
+			switch (curMenu->items[menuSel])
 			{
-				case 0:
+				case MENU_BACK:
+					if (curMenu == &menuNewGame)
+					{
+						curMenu = &menuMain;
+						menuSel = savePresent ? 0 : 1;
+					}
+				break;
+				case MENU_CONTINUE:
 					if (savePresent)
 					{
 						programStateNew = STATE_GAME;
@@ -120,38 +129,50 @@ void titleLogic()
 					}
 				break;
 
-				case 1:
+				case MENU_START_GAME:
 					programStateNew = STATE_GAME;
 					continueGame = 0;
+					practice = 0;
 				break;
 
-				case 2:
+				case MENU_PRACTICE:
+					programStateNew = STATE_GAME;
+					continueGame = 0;
+					practice = 1;
+				break;
+
+				case MENU_NEW_GAME:
+					curMenu = &menuNewGame;
+					menuSel = 0;
+				break;
+
+				case MENU_GAME_TYPE:
 					if (++newGameMode >= GAME_MODE_COUNT)
 					{
 						newGameMode = GAME_MODE_UNSET+1;
 					}
 				break;
 
-				case 3:
+				case MENU_ALGORITHM:
 					if (++currentAlgorithm >= ALGO_COUNT)
 					{
 						currentAlgorithm = ALGO_UNSET+1;
 					}
 				break;
 
-				case 4:
+				case MENU_HISCORE:
 					programStateNew = STATE_HISCORE;
 				break;
 
-				case 5:
+				case MENU_HELP:
 					displayHelp = 1;
 				break;
 
-				case 6:
+				case MENU_CREDITS:
 					displayCredits = 1;
 				break;
 
-				case 7:
+				case MENU_QUIT:
 					quit = 1;
 				break;
 
@@ -179,11 +200,11 @@ void titleLogic()
 				creditsPage = 0;
 			}
 		}
-		else if (menuSel == 2 && --newGameMode == GAME_MODE_UNSET)
+		else if (curMenu->items[menuSel] == MENU_GAME_TYPE && --newGameMode == GAME_MODE_UNSET)
 		{
 			newGameMode = GAME_MODE_COUNT - 1;
 		}
-		else if (menuSel == 3 && --currentAlgorithm == ALGO_UNSET)
+		else if (curMenu->items[menuSel] == MENU_ALGORITHM && --currentAlgorithm == ALGO_UNSET)
 		{
 			currentAlgorithm = ALGO_COUNT - 1;
 		}
@@ -207,11 +228,11 @@ void titleLogic()
 				creditsPage = 1;
 			}
 		}
-		else if (menuSel == 2 && ++newGameMode >= GAME_MODE_COUNT)
+		else if (curMenu->items[menuSel] == MENU_GAME_TYPE && ++newGameMode >= GAME_MODE_COUNT)
 		{
 			newGameMode = GAME_MODE_UNSET + 1;
 		}
-		else if (menuSel == 3 && ++currentAlgorithm >= ALGO_COUNT)
+		else if (curMenu->items[menuSel] == MENU_ALGORITHM && ++currentAlgorithm >= ALGO_COUNT)
 		{
 			currentAlgorithm = ALGO_UNSET + 1;
 		}
@@ -223,9 +244,16 @@ void titleLogic()
 		{
 			keys[KEY_UP] = 0;
 
-			if(--menuSel < (savePresent ? 0 : 1))
+			--menuSel;
+
+			if (curMenu->items[menuSel] == MENU_SEPARATOR)
 			{
-				menuSel = MENU_ITEM_COUNT-1;
+				--menuSel;
+			}
+
+			if(menuSel < (savePresent ? 0 : 1))
+			{
+				menuSel = curMenu->length - 1;
 			}
 		}
 
@@ -233,7 +261,14 @@ void titleLogic()
 		{
 			keys[KEY_DOWN] = 0;
 
-			if(++menuSel > MENU_ITEM_COUNT-1)
+			++menuSel;
+
+			if (curMenu->items[menuSel] == MENU_SEPARATOR)
+			{
+				++menuSel;
+			}
+
+			if(menuSel > curMenu->length - 1)
 			{
 				menuSel = savePresent ? 0 : 1;
 			}
@@ -243,7 +278,6 @@ void titleLogic()
 
 void titleDraw()
 {
-	char menuItems[MENU_ITEM_COUNT][20] = {"Continue game", "New game", "Game type", "Algorithm", "Score table", "Help", "Credits", "Exit"};
 	int i;
 
 	drawImage(titleBackgroundIMG, NULL, screen, 0, 0);
@@ -262,7 +296,6 @@ void titleDraw()
 	}
 	else if (displayCredits)
 	{
-		int i;
 		char page[10] = "";
 		char creditsText[2][10][500] =
 		{
@@ -314,39 +347,39 @@ void titleDraw()
 		}
 		else
 		{
-			switch (newGameMode)
+			if (curMenu == &menuNewGame)
 			{
-				case GAME_MODE_CLASSIC:
-					strncpy(menuItems[2], "Game type: classic", 20);
-				break;
-				case GAME_MODE_GRAVITY:
-					strncpy(menuItems[2], "Game type: gravity", 20);
-				break;
+				switch (newGameMode)
+				{
+					case GAME_MODE_CLASSIC:
+						strncpy(menuText[10], "Game type: classic", 20);
+					break;
+					case GAME_MODE_GRAVITY:
+						strncpy(menuText[10], "Game type: gravity", 20);
+					break;
 
-				default:
-				break;
+					default:
+					break;
+				}
+
+				switch (currentAlgorithm)
+				{
+					case ALGO_RANDOM:
+						strncpy(menuText[11], "Algorithm: random", 20);
+					break;
+					case ALGO_REVERSE:
+						strncpy(menuText[11], "Algorithm: reverse", 20);
+					break;
+
+					default:
+					break;
+				}
 			}
 
-			switch (currentAlgorithm)
-			{
-				case ALGO_RANDOM:
-					strncpy(menuItems[3], "Algorithm: random", 20);
-				break;
-				case ALGO_REVERSE:
-					strncpy(menuItems[3], "Algorithm: reverse", 20);
-				break;
-
-				default:
-				break;
-			}
-
-			for (i = savePresent ? 0 : 1; i < sizeof(menuItems)/sizeof(menuItems[0]); ++i)
-			{
-				font *curFont = (i == menuSel ? &gameFontSelected : &gameFontRegular);
-				dTextCentered(curFont, menuItems[i], 80 + (curFont->h + curFont->leading) * i, SHADOW_DROP);
-			}
+			menuDraw(curMenu, &gameFontRegular, &gameFontSelected, menuSel, savePresent ? 0 : 1, 80);
 		}
 
 		dTextCentered(&gameFontSelected, "(c) 2015 Artur Rojek", SCREEN_H - (gameFontSelected.h + gameFontSelected.leading), SHADOW_DROP);
+
 	}
 }

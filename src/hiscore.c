@@ -150,6 +150,11 @@ void hiscoreLogic()
 		keys[KEY_BACK] = 0;
 		programStateNew = STATE_TITLE;
 	}
+	if (keys[KEY_CANCEL])
+	{
+		keys[KEY_CANCEL] = 0;
+		programStateNew = STATE_TITLE;
+	}
 
 	if(keys[KEY_LEFT])
 	{
