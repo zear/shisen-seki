@@ -308,6 +308,12 @@ void gameGuiDraw()
 
 			dTextCentered(&gameFontRegular, "Well done!", txtPositionY, SHADOW_OUTLINE);
 			dTextCentered(&gameFontRegular, txtMessage, txtPositionY + (gameFontRegular.h + gameFontRegular.leading) * 2, SHADOW_OUTLINE);
+
+			if (practice)
+			{
+				dTextCentered(&gameFontSelected, "Games in practice mode", txtPositionY + (gameFontSelected.h + gameFontSelected.leading) * 4, SHADOW_OUTLINE);
+				dTextCentered(&gameFontSelected, "don't qualify for score table!", txtPositionY + (gameFontSelected.h + gameFontSelected.leading) * 5, SHADOW_OUTLINE);
+			}
 		}
 	}
 	else

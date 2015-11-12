@@ -354,7 +354,7 @@ void boardSelectStone(int x, int y)
 				crossing = 0;
 				gameOver = 1;
 
-				if (!stonesLeft)
+				if (!stonesLeft && !practice)
 				{
 					gamePrepareHiscore();
 				}
