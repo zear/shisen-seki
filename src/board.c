@@ -86,39 +86,42 @@ int boardCheckAvailableMoves()
 	{
 		for (j = 1; j < BOARD_H - 1; ++j)
 		{
-			int stoneNum;
+			int typeA;
 			stone stoneA;
 
-			stoneNum = stones[i][j].type;
+			typeA = stones[i][j].type;
 
-			if (stoneNum == STONE_EMPTY)
+			if (typeA == STONE_EMPTY)
 			{
 				continue;
 			}
 
 			stoneA.x = i;
 			stoneA.y = j;
-			stoneA.type = stoneNum;
+			stoneA.type = typeA;
 
 			for (k = 1; k < BOARD_W - 1; ++k)
 			{
 				for (l = 1; l < BOARD_H - 1; ++l)
 				{
+					int typeB;
 					stone stoneB;
 
-					if (stones[k][l].type != stoneNum)
+					typeB = stones[k][l].type;
+
+					if (!stoneCheckMatchingTypes(typeA, typeB))
 					{
 						continue;
 					}
 
 					stoneB.x = k;
 					stoneB.y = l;
-					stoneB.type = stoneNum;
+					stoneB.type = typeB;
 
 					if (boardCheckConnection(&stoneA, &stoneB))
 					{
-						stones[i][j].type = stoneNum;
-						stones[k][l].type = stoneNum;
+						stones[i][j].type = typeA;
+						stones[k][l].type = typeB;
 
 						stones[i][j].alpha = 255;
 						stones[k][l].alpha = 255;
@@ -209,18 +212,18 @@ void boardGenerate()
 					else
 					{
 						int draw = 1;
-						int stoneNum;
+						int type;
 
 						while (draw)
 						{
-							stoneNum = 1 + rand() % (STONE_COUNT - 1);
+							type = 1 + rand() % (STONE_COUNT - 1);
 
-							if (pool[stoneNum - 1] < 4)
+							if (pool[type - 1] < stoneAmountOfStonesOfType(type))
 							{
-								++pool[stoneNum - 1];
+								++pool[type - 1];
 								draw = 0;
 
-								stones[i][j].type = stoneNum;
+								stones[i][j].type = type;
 							}
 						}
 					}
@@ -231,19 +234,35 @@ void boardGenerate()
 		case ALGO_REVERSE:
 			for (stonesLeft = 144; stonesLeft > 0; stonesLeft-=2)
 			{
-				int stoneNum;
+				int typeA;
+				int typeB;
 				int match = 0;
 				int x;
 				int y;
 
 				while (!match)
 				{
-					stoneNum = 1 + rand() % (STONE_COUNT - 1);
+					typeA = 1 + rand() % (STONE_COUNT - 1);
 
-					if (pool[stoneNum - 1] < 4)
+					if (pool[typeA - 1] < stoneAmountOfStonesOfType(typeA))
 					{
-						pool[stoneNum - 1] += 2;
 						match = 1;
+						++pool[typeA - 1];
+
+						if (stoneAmountOfStonesOfType(typeA) == 1)
+						{
+							typeB = STONE_EMPTY;
+							while (typeB == STONE_EMPTY || pool[typeB - 1] >= stoneAmountOfStonesOfType(typeB) || !stoneCheckMatchingTypes(typeA, typeB))
+							{
+								typeB = 1 + rand() % (STONE_COUNT - 1);
+							}
+						}
+						else
+						{
+							typeB = typeA;
+						}
+
+						++pool[typeB - 1];
 					}
 				}
 
@@ -256,7 +275,7 @@ void boardGenerate()
 
 					if (stones[x][y].type == STONE_EMPTY)
 					{
-						stoneA.type = stoneNum;
+						stoneA.type = typeA;
 						stones[x][y].type = stoneA.type;
 						stoneA.x = x;
 						stoneA.y = y;
@@ -274,8 +293,8 @@ void boardGenerate()
 
 					if (stones[x][y].type == STONE_EMPTY)
 					{
-						stoneA.type = stoneNum;
-						stoneB.type = stoneNum;
+						stoneA.type = typeA;
+						stoneB.type = typeB;
 						stones[x][y].type = stoneB.type;
 						stoneB.x = x;
 						stoneB.y = y;
@@ -284,8 +303,8 @@ void boardGenerate()
 
 						if (match)
 						{
-							stones[stoneA.x][stoneA.y].type = stoneNum;
-							stones[stoneB.x][stoneB.y].type = stoneNum;
+							stones[stoneA.x][stoneA.y].type = typeA;
+							stones[stoneB.x][stoneB.y].type = typeB;
 						}
 						else
 						{
@@ -563,7 +582,7 @@ int boardCheckConnection(stone *A, stone *B)
 		return 0;
 	}
 
-	if (A->type != B->type)
+	if (!stoneCheckMatchingTypes(A->type, B->type))
 	{
 		return 0;
 	}

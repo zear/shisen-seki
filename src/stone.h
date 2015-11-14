@@ -38,8 +38,14 @@ typedef enum stoneType
 	DRAGON_RED,
 	DRAGON_GREEN,
 	DRAGON_WHITE,
-	FLOWER_ORC,
-	FLOWER_CRYS,
+	SEASON_SPRING,
+	SEASON_SUMMER,
+	SEASON_AUTUMN,
+	SEASON_WINTER,
+	FLOWER_ONE,
+	FLOWER_TWO,
+	FLOWER_THREE,
+	FLOWER_FOUR,
 	STONE_COUNT
 } stoneType;
 
@@ -50,5 +56,8 @@ typedef struct stone
 	int x;
 	int y;
 } stone;
+
+int stoneAmountOfStonesOfType(stoneType type);
+int stoneCheckMatchingTypes(stoneType typeA, stoneType typeB);
 
 #endif /* _STONE_H_ */
