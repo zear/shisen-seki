@@ -33,6 +33,7 @@ void gameLoad()
 {
 	boardLoad();
 	enteringHiscore = 0;
+	fadeOutTimer = 0;
 }
 
 void gamePrepareHiscore()
@@ -171,69 +172,72 @@ void gameLogic()
 			}
 		}
 
-		if (keys[KEY_LEFT])
+		if (!fadeOutTimer)
 		{
-			if (--canMoveX <= 0)
+			if (keys[KEY_LEFT])
 			{
-				canMoveX = KEY_DELAY;
-				--cursorX;
-			}
-		}
-		else if (keys[KEY_RIGHT])
-		{
-			if (--canMoveX <= 0)
-			{
-				canMoveX = KEY_DELAY;
-				++cursorX;
-			}
-		}
-		else
-		{
-			canMoveX = 0;
-		}
-
-		if (keys[KEY_UP])
-		{
-			if (--canMoveY <= 0)
-			{
-				canMoveY = KEY_DELAY;
-				--cursorY;
-			}
-		}
-		else if (keys[KEY_DOWN])
-		{
-			if (--canMoveY <= 0)
-			{
-				canMoveY = KEY_DELAY;
-				++cursorY;
-			}
-		}
-		else
-		{
-			canMoveY = 0;
-		}
-
-		if (keys[KEY_OK])
-		{
-			keys[KEY_OK] = 0;
-
-			if (gameOver)
-			{
-				if (!enteringHiscore)
+				if (--canMoveX <= 0)
 				{
-					programStateNew = STATE_TITLE;
+					canMoveX = KEY_DELAY;
+					--cursorX;
+				}
+			}
+			else if (keys[KEY_RIGHT])
+			{
+				if (--canMoveX <= 0)
+				{
+					canMoveX = KEY_DELAY;
+					++cursorX;
 				}
 			}
 			else
 			{
-				boardSelectStone(cursorX, cursorY);
+				canMoveX = 0;
 			}
-		}
 
-		if (keys[KEY_CANCEL])
-		{
-			stoneA.type = STONE_EMPTY;
-			keys[KEY_CANCEL] = 0;
+			if (keys[KEY_UP])
+			{
+				if (--canMoveY <= 0)
+				{
+					canMoveY = KEY_DELAY;
+					--cursorY;
+				}
+			}
+			else if (keys[KEY_DOWN])
+			{
+				if (--canMoveY <= 0)
+				{
+					canMoveY = KEY_DELAY;
+					++cursorY;
+				}
+			}
+			else
+			{
+				canMoveY = 0;
+			}
+
+			if (keys[KEY_OK])
+			{
+				keys[KEY_OK] = 0;
+
+				if (gameOver)
+				{
+					if (!enteringHiscore)
+					{
+						programStateNew = STATE_TITLE;
+					}
+				}
+				else
+				{
+					boardSelectStone(cursorX, cursorY);
+				}
+			}
+
+			if (keys[KEY_CANCEL])
+			{
+				stoneA.type = STONE_EMPTY;
+				keys[KEY_CANCEL] = 0;
+			}
 		}
 
 		if (cursorX < 1)
@@ -255,7 +259,9 @@ void gameLogic()
 
 	}
 
-	if (!gameOver)
+	boardFadeOutSelectedStones();
+
+	if (!gameOver && !fadeOutTimer)
 	{
 		++gameTime;
 	}

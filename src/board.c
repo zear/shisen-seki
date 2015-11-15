@@ -21,6 +21,7 @@ int cursorX = 1;
 int cursorY = 1;
 int generating;
 int checkingMoves;
+int fadeOutTimer;
 
 void boardSetAlpha(int alpha)
 {
@@ -39,6 +40,58 @@ void boardSetAlpha(int alpha)
 			stones[i][j].alpha = alpha % 256;
 		}
 	}
+}
+
+void boardFadeOutSelectedStones()
+{
+	if (fadeOutTimer > 0)
+	{
+		--fadeOutTimer;
+
+		stones[stoneA.x][stoneA.y].alpha -= 255/FADE_DELAY;
+		stones[stoneB.x][stoneB.y].alpha -= 255/FADE_DELAY;
+
+		if (stones[stoneA.x][stoneA.y].alpha < 0)
+			stones[stoneA.x][stoneA.y].alpha = 0;
+		if (stones[stoneB.x][stoneB.y].alpha < 0)
+			stones[stoneB.x][stoneB.y].alpha = 0;
+
+		if (fadeOutTimer <= 0)
+		{
+			boardRemoveSelectedStones();
+		}
+	}
+}
+
+void boardRemoveSelectedStones()
+{
+	line tmpLineC;
+
+	stones[stoneA.x][stoneA.y].alpha = 255;
+	stones[stoneB.x][stoneB.y].alpha = 255;
+	stones[stoneA.x][stoneA.y].type = STONE_EMPTY;
+	stones[stoneB.x][stoneB.y].type = STONE_EMPTY;
+
+	tmpLineC = lineC;
+	stonesLeft -= 2;
+
+	if (!generating && !checkingMoves && currentGameMode == GAME_MODE_GRAVITY)
+	{
+		boardApplyGravity();
+	}
+
+	if (!boardCheckAvailableMoves())
+	{
+		gameOver = 1;
+
+		if (!stonesLeft && !practice)
+		{
+			gamePrepareHiscore();
+		}
+	}
+
+	crossing = 0;
+	lineC = tmpLineC;
 }
 
 int boardStoneSurrounded(stone *st)
@@ -363,25 +416,6 @@ void boardSelectStone(int x, int y)
 			stoneA = stoneB;
 			stoneB.type = STONE_EMPTY;
 		}
-		else
-		{
-			line tmpLineC = lineC;
-			stonesLeft -= 2;
-
-			if (!boardCheckAvailableMoves())
-			{
-				crossing = 0;
-				gameOver = 1;
-
-				if (!stonesLeft && !practice)
-				{
-					gamePrepareHiscore();
-				}
-
-			}
-
-			lineC = tmpLineC;
-		}
 	}
 }
 
@@ -697,13 +731,15 @@ int boardCheckConnection(stone *A, stone *B)
 
 	if (crossing)
 	{
+		if (!generating && !checkingMoves)
+		{
+			fadeOutTimer = FADE_DELAY;
+			stones[A->x][A->y].type = A->type;
+			stones[B->x][B->y].type = B->type;
+		}
+
 		A->type = STONE_EMPTY;
 		B->type = STONE_EMPTY;
-
-		if (!generating && !checkingMoves && currentGameMode == GAME_MODE_GRAVITY)
-		{
-			boardApplyGravity();
-		}
 
 		return 1;
 	}
@@ -935,7 +971,7 @@ void boardDraw()
 		boardDrawConnection();
 	}
 
-	if (!gameOver)
+	if (!gameOver && !fadeOutTimer)
 	{
 		int rcolor = SDL_MapRGB(screen->format, 0, 0, 255);
 

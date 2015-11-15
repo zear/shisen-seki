@@ -15,6 +15,8 @@
 
 #define	ALLOWED_MOVES	3
 
+#define FADE_DELAY	30
+
 typedef enum algorithm
 {
 	ALGO_UNSET = 0,
@@ -38,8 +40,12 @@ extern stone stoneB;
 extern int stonesLeft;
 extern int cursorX;
 extern int cursorY;
+extern int fadeOutTimer;
 SDL_Surface *boardBackgroundIMG;
 
+void boardSetAlpha(int alpha);
+void boardFadeOutSelectedStones();
+void boardRemoveSelectedStones();
 int boardStoneSurrounded(stone *st);
 int boardCheckAvailableMoves();
 void boardApplyGravity();
