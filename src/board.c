@@ -903,6 +903,11 @@ void boardLoad()
 				boardGenerate();
 				cursorX = 1;
 				cursorY = 1;
+
+				if (practice)
+				{
+					boardCheckAvailableMoves();
+				}
 			}
 		}
 	}
