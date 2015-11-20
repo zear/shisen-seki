@@ -62,7 +62,15 @@ void titleLogic()
 		}
 		else
 		{
-			quit = 1;
+			if (curMenu == &menuNewGame)
+			{
+				curMenu = &menuMain;
+				menuSel = savePresent ? 0 : 1;
+			}
+			else
+			{
+				menuSel = curMenu->length - 1;
+			}
 		}
 	}
 	if(keys[KEY_CANCEL])
