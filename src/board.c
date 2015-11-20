@@ -733,7 +733,7 @@ int boardCheckConnection(stone *A, stone *B)
 	{
 		if (!generating && !checkingMoves)
 		{
-			fadeOutTimer = FADE_DELAY;
+			fadeOutTimer = showAnimations ? FADE_DELAY : 1;
 			stones[A->x][A->y].type = A->type;
 			stones[B->x][B->y].type = B->type;
 		}

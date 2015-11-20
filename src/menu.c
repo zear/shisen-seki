@@ -20,7 +20,8 @@ menuItems menuNewGameItems[] =
 	MENU_BACK,
 	MENU_SEPARATOR,
 	MENU_GAME_TYPE,
-	MENU_ALGORITHM
+	MENU_ALGORITHM,
+	MENU_ANIMATIONS
 };
 
 char menuText[][20] =
@@ -37,6 +38,7 @@ char menuText[][20] =
 	"Practice",
 	"Game type",
 	"Algorithm",
+	"Animations"
 };
 
 menuContainer menuMain;

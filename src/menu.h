@@ -18,6 +18,7 @@ typedef enum menuItems
 	MENU_PRACTICE,
 	MENU_GAME_TYPE,
 	MENU_ALGORITHM,
+	MENU_ANIMATIONS,
 	MENU_COUNT
 	
 } menuItems;

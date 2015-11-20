@@ -159,6 +159,9 @@ void titleLogic()
 						currentAlgorithm = ALGO_UNSET+1;
 					}
 				break;
+				case MENU_ANIMATIONS:
+					showAnimations = !showAnimations;
+				break;
 
 				case MENU_HISCORE:
 					programStateNew = STATE_HISCORE;
@@ -208,6 +211,10 @@ void titleLogic()
 		{
 			currentAlgorithm = ALGO_COUNT - 1;
 		}
+		else if (curMenu->items[menuSel] == MENU_ANIMATIONS)
+		{
+			showAnimations = !showAnimations;
+		}
 	}
 
 	if(keys[KEY_RIGHT])
@@ -235,6 +242,10 @@ void titleLogic()
 		else if (curMenu->items[menuSel] == MENU_ALGORITHM && ++currentAlgorithm >= ALGO_COUNT)
 		{
 			currentAlgorithm = ALGO_UNSET + 1;
+		}
+		else if (curMenu->items[menuSel] == MENU_ANIMATIONS)
+		{
+			showAnimations = !showAnimations;
 		}
 	}
 
@@ -352,10 +363,10 @@ void titleDraw()
 				switch (newGameMode)
 				{
 					case GAME_MODE_CLASSIC:
-						strncpy(menuText[10], "Game type: classic", 20);
+						strncpy(menuText[MENU_GAME_TYPE-1], "Game type: classic", 20);
 					break;
 					case GAME_MODE_GRAVITY:
-						strncpy(menuText[10], "Game type: gravity", 20);
+						strncpy(menuText[MENU_GAME_TYPE-1], "Game type: gravity", 20);
 					break;
 
 					default:
@@ -365,15 +376,17 @@ void titleDraw()
 				switch (currentAlgorithm)
 				{
 					case ALGO_RANDOM:
-						strncpy(menuText[11], "Algorithm: random", 20);
+						strncpy(menuText[MENU_ALGORITHM-1], "Algorithm: random", 20);
 					break;
 					case ALGO_REVERSE:
-						strncpy(menuText[11], "Algorithm: reverse", 20);
+						strncpy(menuText[MENU_ALGORITHM-1], "Algorithm: reverse", 20);
 					break;
 
 					default:
 					break;
 				}
+
+				snprintf(menuText[MENU_ANIMATIONS-1], 20, "Animations: %s", showAnimations ? "yes" : "no");
 			}
 
 			menuDraw(curMenu, &gameFontRegular, &gameFontSelected, menuSel, curMenu == &menuMain ? (savePresent ? 0 : 1) : 0, 80);
