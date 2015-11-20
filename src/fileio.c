@@ -65,6 +65,13 @@ void getConfig()
 		}
 		*arg = '\0';
 		arg++;
+
+	if (!strcmp(line, "GAME_MODE"))
+		sscanf(arg, "%d", (int *)&newGameMode);
+	else if (!strcmp(line, "ALGORITHM"))
+		sscanf(arg, "%d", (int *)&currentAlgorithm);
+	else if (!strcmp(line, "ANIMATIONS"))
+		sscanf(arg, "%d", &showAnimations);
 	}
 
 	fclose(f);
@@ -98,6 +105,8 @@ void storeConfig()
 		printf("Failed to open config file: \"%s\" for writing.\n", config);
 		return;
 	}
+
+	fprintf(f, "GAME_MODE %d\nALGORITHM %d\nANIMATIONS %d\n", newGameMode, currentAlgorithm, showAnimations);
 
 	fclose(f);
 	free(config);
