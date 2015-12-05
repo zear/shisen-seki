@@ -2,6 +2,7 @@
 
 #include <SDL_mixer.h>
 
+int hasAudio;
 Mix_Music *bgdMusic = NULL;
 
 int initAudio()
@@ -10,11 +11,13 @@ int initAudio()
 
 	if ((Mix_Init(flags)&flags) != flags)
 	{
+		fprintf(stderr, "ERROR: Failed to initialize the audio engine: No OGG support detected.");
 		return -1;
 	}
 
 	if (Mix_OpenAudio(AUDIO_SAMPLE_RATE, MIX_DEFAULT_FORMAT, 2, AUDIO_CHUNK_SIZE))
 	{
+		fprintf(stderr, "ERROR: Failed to initialize the audio engine.");
 		return -1;
 	}
 
@@ -23,6 +26,11 @@ int initAudio()
 
 void deinitAudio()
 {
+	if (!hasAudio)
+	{
+		return;
+	}
+
 	unloadMusic(&bgdMusic);
 
 	Mix_CloseAudio();
@@ -31,6 +39,11 @@ void deinitAudio()
 
 Mix_Music *loadMusic(Mix_Music *track, char *fileName)
 {
+	if (!hasAudio)
+	{
+		return NULL;
+	}
+
 	track = Mix_LoadMUS(fileName);
 
 	return track;
@@ -38,12 +51,22 @@ Mix_Music *loadMusic(Mix_Music *track, char *fileName)
 
 void unloadMusic(Mix_Music **track)
 {
+	if (!hasAudio)
+	{
+		return;
+	}
+
 	Mix_FreeMusic(*track);
 	*track = NULL;
 }
 
 void playMusic(Mix_Music *track)
 {
+	if (!hasAudio)
+	{
+		return;
+	}
+
 	if (!Mix_PlayingMusic())
 	{
 		Mix_PlayMusic(track, -1);
@@ -52,6 +75,11 @@ void playMusic(Mix_Music *track)
 
 void pauseMusic()
 {
+	if (!hasAudio)
+	{
+		return;
+	}
+
 	if (Mix_PlayingMusic())
 	{
 		Mix_PauseMusic();

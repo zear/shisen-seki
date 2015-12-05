@@ -23,11 +23,7 @@ int init()
 		return -1;
 	}
 
-	if (initAudio())
-	{
-		deinitSDL();
-		return -1;
-	}
+	hasAudio = initAudio();
 
 	if (fontLoad(&gameFontShadow, "data/gfx/fontGray.bmp", 6, 11, 1, 4, NULL))
 	{

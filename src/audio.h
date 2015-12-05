@@ -6,6 +6,7 @@
 #define AUDIO_SAMPLE_RATE	44100
 #define AUDIO_CHUNK_SIZE	1024
 
+extern int hasAudio;
 extern Mix_Music *bgdMusic;
 
 int initAudio();
