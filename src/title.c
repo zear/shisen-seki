@@ -13,7 +13,7 @@
 #include "video.h"
 
 #define HELP_PAGES	5
-#define CREDITS_PAGES	2
+#define CREDITS_PAGES	3
 
 menuContainer *curMenu;
 int menuSel;
@@ -347,10 +347,10 @@ void titleDraw()
 		char creditsText[CREDITS_PAGES][10][500] =
 		{
 			{ "Programming:",
-			  "Artur Rojek",
+			  "Artur Rojek (zear)",
 			  "",
 			  "Graphics:",
-			  "Joe Vargas",
+			  "Joe Vargas (jxv)",
 			  "",
 			  "",
 			  "",
@@ -366,6 +366,17 @@ void titleDraw()
 			  "http://creativecommons.org/licenses/by/3.0/",
 			  "",
 			  "Changes: Trimmed and converted to OGG",
+			  ""
+			},
+			{ "Special thanks:",
+			  "(alphabetical order)",
+			  "",
+			  "JohnnyOnFlame",
+			  "Nebuleon",
+			  "remaxim",
+			  "Surkow",
+			  "",
+			  "",
 			  ""
 			}
 		};
