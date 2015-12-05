@@ -9,11 +9,16 @@
 
 scoreEntry scoreTable[MAX_MODES][MAX_SCORES];
 int hiscorePage;
+int highlightPage = -1;
+int highlightEntry = -1;
 
 void hiscoreUnload()
 {
 	SDL_FreeSurface(hiscoreBackgroundIMG);
 	hiscoreBackgroundIMG = NULL;
+	hiscorePage = 0;
+	highlightPage = -1;
+	highlightEntry = -1;
 }
 
 void hiscoreLoad()
@@ -22,8 +27,6 @@ void hiscoreLoad()
 	{
 		hiscoreBackgroundIMG = loadImage("data/gfx/background.bmp");
 	}
-
-	hiscorePage = 0;
 }
 
 int hiscoreCheckScore(scoreEntry *entry, gameMode *mode, algorithm *algo)
@@ -141,6 +144,10 @@ void hiscoreAddRecord(scoreEntry *entry, gameMode *mode, algorithm *algo)
 	}
 	strcpy(scoreTable[modeId][place].name, entry->name);
 	scoreTable[modeId][place].time = entry->time;
+
+	hiscorePage = modeId;
+	highlightPage = modeId;
+	highlightEntry = place;
 }
 
 void hiscoreLogic()
@@ -190,6 +197,7 @@ void hiscoreDraw()
 	for (i = 0; i < MAX_SCORES; ++i)
 	{
 		char txtEntry[100];
+		font *curFont = &gameFontRegular;
 
 		if (scoreTable[hiscorePage][i].time > 0)
 		{
@@ -199,6 +207,12 @@ void hiscoreDraw()
 		{
 			sprintf(txtEntry, "%d.  n/a        --:--:--", i+1);
 		}
-		dTextCentered(&gameFontRegular, txtEntry, 80 + (gameFontRegular.h + gameFontRegular.leading) * i, SHADOW_DROP);
+
+		if (hiscorePage == highlightPage && i == highlightEntry)
+		{
+			curFont = &gameFontSelected;
+		}
+
+		dTextCentered(curFont, txtEntry, 80 + (curFont->h + curFont->leading) * i, SHADOW_DROP);
 	}
 }

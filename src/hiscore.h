@@ -17,6 +17,7 @@ typedef struct scoreEntry
 
 SDL_Surface *hiscoreBackgroundIMG;
 extern scoreEntry scoreTable[MAX_MODES][MAX_SCORES];
+extern int hiscorePage;
 
 void hiscoreUnload();
 void hiscoreLoad();
