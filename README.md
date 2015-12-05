@@ -21,3 +21,5 @@ License
 * Source code - [MIT License](LICENSE.txt)
 * Graphics - [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
 * Fonts - [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
+* Music:
+ * "White Lotus" by Kevin MacLeod (incompetech.com) - [Creative Commons: By Attribution 3.0](http://creativecommons.org/licenses/by/3.0/); Changes: Trimmed and converted to OGG

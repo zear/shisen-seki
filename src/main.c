@@ -23,7 +23,7 @@ int init()
 		return -1;
 	}
 
-	hasAudio = initAudio();
+	hasAudio = !initAudio();
 
 	if (fontLoad(&gameFontShadow, "data/gfx/fontGray.bmp", 6, 11, 1, 4, NULL))
 	{

@@ -42,7 +42,7 @@ void titleLoad()
 
 	savePresent = getBoard(1);
 	menuSel = savePresent ? 0 : 1;
-	bgdMusic = loadMusic(bgdMusic, "data/music/bgd01.mp3");
+	bgdMusic = loadMusic(bgdMusic, "data/music/bgd01.ogg");
 
 	if(bgdMusic)
 	{
@@ -357,14 +357,14 @@ void titleDraw()
 			  ""
 			},
 			{ "Music:",
+			  "Kevin MacLeod (incompetech.com)",
+			  "\"White Lotus\"",
 			  "",
+			  "Licensed under",
+			  "Creative Commons: By Attribution 3.0",
+			  "http://creativecommons.org/licenses/by/3.0/",
 			  "",
-			  "",
-			  "",
-			  "",
-			  "",
-			  "",
-			  "",
+			  "Changes: Trimmed and converted to OGG",
 			  ""
 			}
 		};
