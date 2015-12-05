@@ -1,6 +1,7 @@
 #include "board.h"
 
 #include <stdlib.h>
+#include "audio.h"
 #include "fileio.h"
 #include "font.h"
 #include "game.h"
@@ -736,6 +737,8 @@ int boardCheckConnection(stone *A, stone *B)
 			fadeOutTimer = showAnimations ? FADE_DELAY : 1;
 			stones[A->x][A->y].type = A->type;
 			stones[B->x][B->y].type = B->type;
+
+			playSfx(clearSfx);
 		}
 
 		A->type = STONE_EMPTY;

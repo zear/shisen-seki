@@ -4,6 +4,7 @@
 
 int hasAudio;
 Mix_Music *bgdMusic = NULL;
+Mix_Chunk *clearSfx = NULL;
 
 int initAudio()
 {
@@ -84,4 +85,32 @@ void pauseMusic()
 	{
 		Mix_PauseMusic();
 	}
+}
+
+Mix_Chunk *loadSfx(Mix_Chunk *effect, char *fileName)
+{
+	if (!hasAudio)
+	{
+		return NULL;
+	}
+
+	effect = Mix_LoadWAV(fileName);
+
+	return effect;
+}
+
+void unloadSfx(Mix_Chunk **effect)
+{
+	if (!hasAudio)
+	{
+		return;
+	}
+
+	Mix_FreeChunk(*effect);
+	*effect = NULL;
+}
+
+void playSfx(Mix_Chunk *effect)
+{
+	Mix_PlayChannel(-1, effect, 0);
 }

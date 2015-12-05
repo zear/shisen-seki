@@ -191,6 +191,7 @@ void titleLogic()
 				break;
 
 				case MENU_QUIT:
+					unloadMusic(&bgdMusic);
 					quit = 1;
 				break;
 

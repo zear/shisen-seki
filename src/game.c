@@ -1,6 +1,7 @@
 #include "game.h"
 
 #include <stdlib.h>
+#include "audio.h"
 #include "board.h"
 #include "fileio.h"
 #include "font.h"
@@ -25,6 +26,7 @@ int scoreCursorPos;
 
 void gameUnload()
 {
+	unloadSfx(&clearSfx);
 	storeBoard();
 	boardUnload();
 	gameTime = 0;
@@ -32,6 +34,7 @@ void gameUnload()
 
 void gameLoad()
 {
+	clearSfx = loadSfx(clearSfx, "data/sfx/clear.wav");
 	boardLoad();
 	enteringHiscore = 0;
 	fadeOutTimer = 0;
