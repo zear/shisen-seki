@@ -30,7 +30,7 @@ typedef enum stoneType
 	CHAR_SIX,
 	CHAR_SEVEN,
 	CHAR_EIGHT,
-	CHAT_NINE,
+	CHAR_NINE,
 	WIND_EAST,
 	WIND_SOUTH,
 	WIND_WEST,
