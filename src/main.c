@@ -35,7 +35,7 @@ int init()
 		return -1;
 	}
 
-	if (fontLoad(&gameFontSelected, "data/gfx/fontRed.bmp", 6, 11, 1, 4, &gameFontShadow))
+	if (fontLoad(&gameFontSelected, "data/gfx/fontLightOrange.bmp", 6, 11, 1, 4, &gameFontShadow))
 	{
 		return -1;
 	}
