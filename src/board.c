@@ -970,6 +970,10 @@ void boardDraw()
 			{
 				SDL_SetAlpha(stonesTileset.image, SDL_SRCALPHA, stones[x][y].alpha);
 				drawImage(stonesTileset.image, &stonesTileset.clip[stones[x][y].type - 1], screen, BOARD_OFFSET_X + i - x, BOARD_OFFSET_Y + j - y);
+				if (showStoneRank && stones[x][y].alpha == 255)
+				{
+					dText(&gameFontRegular, (char *)stoneRankText(stones[x][y].type), BOARD_OFFSET_X + i - x + 1, BOARD_OFFSET_Y + j - y + 1, SHADOW_OUTLINE);
+				}
 			}
 		}
 	}

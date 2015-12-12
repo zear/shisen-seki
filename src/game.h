@@ -12,6 +12,7 @@ typedef enum gameMode
 } gameMode;
 
 extern int showAnimations;
+extern int showStoneRank;
 extern int practice;
 extern unsigned long gameTime;
 extern int continueGame;

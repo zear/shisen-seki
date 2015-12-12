@@ -12,6 +12,7 @@
 #include "video.h"
 
 int showAnimations = 1;
+int showStoneRank;
 int practice;
 int continueGame;
 gameMode newGameMode = GAME_MODE_CLASSIC;
@@ -174,6 +175,13 @@ void gameLogic()
 			{
 				programStateNew = STATE_TITLE;
 			}
+		}
+
+		if (keys[KEY_EXTRA])
+		{
+			keys[KEY_EXTRA] = 0;
+
+			showStoneRank = !showStoneRank;
 		}
 
 		if (!fadeOutTimer)
