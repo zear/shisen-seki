@@ -3,8 +3,6 @@
 
 #include <SDL.h>
 
-//#define TILESET_ROW_LENGTH	8
-
 typedef struct tileset
 {
 	SDL_Surface *image;
