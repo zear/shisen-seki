@@ -266,11 +266,10 @@ void boardGenerate()
 					else
 					{
 						int draw = 1;
-						int type;
 
 						while (draw)
 						{
-							type = 1 + rand() % (STONE_COUNT - 1);
+							int type = 1 + rand() % (STONE_COUNT - 1);
 
 							if (pool[type - 1] < stoneAmountOfStonesOfType(type))
 							{

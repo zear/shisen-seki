@@ -116,8 +116,6 @@ int getBoard(int probe)
 {
 	FILE *f;
 	char *save;
-	int i;
-	int j;
 	int x;
 	int y;
 	uint8_t version;
@@ -168,9 +166,9 @@ int getBoard(int probe)
 		return 1;
 	}
 
-	for (i = 0, x = 0; x < BOARD_W; i+=STONE_W, ++x)
+	for (x = 0; x < BOARD_W; ++x)
 	{
-		for (j = 0, y = 0; y < BOARD_H; j+=STONE_H, ++y)
+		for (y = 0; y < BOARD_H; ++y)
 		{
 			int index = y * BOARD_W + x;
 			uint8_t value;
@@ -198,8 +196,6 @@ void storeBoard()
 {
 	FILE *f;
 	char *save;
-	int i;
-	int j;
 	int x;
 	int y;
 	uint8_t version = SAVE_FORMAT_VERSION;
@@ -234,9 +230,9 @@ void storeBoard()
 	}
 
 	fwrite(&version, sizeof(uint8_t), 1, f);
-	for (i = 0, x = 0; x < BOARD_W; i+=STONE_W, ++x)
+	for (x = 0; x < BOARD_W; ++x)
 	{
-		for (j = 0, y = 0; y < BOARD_H; j+=STONE_H, ++y)
+		for (y = 0; y < BOARD_H; ++y)
 		{
 			int index = y * BOARD_W + x;
 			uint8_t value = stones[x][y].type ^ index;

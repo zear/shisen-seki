@@ -5,8 +5,6 @@
 SDL_Surface *screen;
 Uint32 curTicks;
 Uint32 lastTicks = 0;
-int blinkTimer = 0;
-int blinkTimerSlow = 0;
 
 int initSDL()
 {
@@ -168,18 +166,6 @@ int frameLimiter()
 
 	SDL_Delay(1);
 	return 1;
-}
-
-void blinkTimersTick()
-{
-	if(++blinkTimer > 20)
-	{
-		blinkTimer = 0;
-	}
-	if(++blinkTimerSlow > 40)
-	{
-		blinkTimerSlow = 0;
-	}
 }
 
 void clearScreen()

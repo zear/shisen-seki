@@ -35,7 +35,7 @@ int hiscoreCheckScore(scoreEntry *entry, gameMode *mode, algorithm *algo)
 	int place = MAX_SCORES;
 	int modeId = -1;
 
-	if (entry->time <= 0) // Invalid record.
+	if (entry->time == 0) // Invalid record.
 	{
 		return -1;
 	}
@@ -91,7 +91,7 @@ void hiscoreAddRecord(scoreEntry *entry, gameMode *mode, algorithm *algo)
 	int place = MAX_SCORES;
 	int modeId = -1;
 
-	if (entry->time <= 0) // Invalid record.
+	if (entry->time == 0) // Invalid record.
 	{
 		return;
 	}
