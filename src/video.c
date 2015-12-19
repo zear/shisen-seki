@@ -3,6 +3,8 @@
 #include <SDL.h>
 
 SDL_Surface *screen;
+SDL_Surface *screenScaled;
+int scale;
 Uint32 curTicks;
 Uint32 lastTicks = 0;
 
@@ -16,7 +18,8 @@ int initSDL()
 	SDL_WM_SetCaption("Shisen-Seki", NULL);
 	SDL_ShowCursor(SDL_DISABLE);
 
-	screen = SDL_SetVideoMode(SCREEN_W, SCREEN_H, SCREEN_BPP, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	screenScaled = SDL_SetVideoMode(SCREEN_W * scale, SCREEN_H * scale, SCREEN_BPP, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	screen = scale > 1 ? SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_W, SCREEN_H, SCREEN_BPP, 0, 0, 0, 0) : screenScaled;
 
 	if(screen == NULL)
 	{
@@ -36,6 +39,11 @@ void deinitSDL()
 	if(SDL_NumJoysticks() > 0)
 	{
 		SDL_JoystickClose(0);
+	}
+
+	if (screen && scale > 1)
+	{
+		SDL_FreeSurface(screen);
 	}
 
 	SDL_Quit();

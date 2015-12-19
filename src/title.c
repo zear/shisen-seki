@@ -271,7 +271,7 @@ void titleLogic()
 	{
 		int posY = 80 + (gameFontRegular.h + gameFontRegular.leading) * i;
 
-		if (mouse[1] >= posY && mouse[1] <= posY + gameFontRegular.h)
+		if (mouse[1] / scale >= posY && mouse[1] / scale <= posY + gameFontRegular.h)
 		{
 			menuSel = i;
 			break;
@@ -386,9 +386,9 @@ void titleDraw()
 			  "",
 			  "JohnnyOnFlame",
 			  "Nebuleon",
+			  "Paul Cercueil",
 			  "remaxim",
 			  "Surkow",
-			  "",
 			  "",
 			  ""
 			}

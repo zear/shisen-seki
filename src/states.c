@@ -4,6 +4,7 @@
 #include "game.h"
 #include "hiscore.h"
 #include "main.h"
+#include "scaler.h"
 #include "title.h"
 #include "video.h"
 
@@ -92,5 +93,14 @@ void draw()
 		break;
 	}
 
-	SDL_Flip(screen);
+	switch (scale)
+	{
+		case 1:
+		break;
+		case 2:
+			upscale2((uint32_t *)screenScaled->pixels, (uint32_t *)screen->pixels);
+		break;
+	}
+
+	SDL_Flip(screenScaled);
 }

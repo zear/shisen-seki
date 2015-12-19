@@ -10,6 +10,8 @@
 
 extern int quit;
 extern SDL_Surface *screen;
+extern SDL_Surface *screenScaled;
+extern int scale;
 
 int initSDL();
 void deinitSDL();

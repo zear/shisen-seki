@@ -8,6 +8,7 @@
 #include "board.h"
 #include "game.h"
 #include "hiscore.h"
+#include "video.h"
 
 char *configDir;
 
@@ -66,7 +67,9 @@ void getConfig()
 		*arg = '\0';
 		arg++;
 
-	if (!strcmp(line, "GAME_MODE"))
+	if (!strcmp(line, "SCALE") && !scale)
+		sscanf(arg, "%d", (int *)&scale);
+	else if (!strcmp(line, "GAME_MODE"))
 		sscanf(arg, "%d", (int *)&newGameMode);
 	else if (!strcmp(line, "ALGORITHM"))
 		sscanf(arg, "%d", (int *)&currentAlgorithm);
@@ -106,7 +109,7 @@ void storeConfig()
 		return;
 	}
 
-	fprintf(f, "GAME_MODE %d\nALGORITHM %d\nANIMATIONS %d\n", newGameMode, currentAlgorithm, showAnimations);
+	fprintf(f, "SCALE %d\nGAME_MODE %d\nALGORITHM %d\nANIMATIONS %d\n", scale, newGameMode, currentAlgorithm, showAnimations);
 
 	fclose(f);
 	free(config);
