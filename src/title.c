@@ -55,6 +55,8 @@ void titleLoad()
 
 void titleLogic()
 {
+	int i;
+
 	if(keys[KEY_BACK])
 	{
 		keys[KEY_BACK] = 0;
@@ -262,6 +264,17 @@ void titleLogic()
 		else if (curMenu->items[menuSel] == MENU_ANIMATIONS)
 		{
 			showAnimations = !showAnimations;
+		}
+	}
+
+	for (i = 0; mouseMoved && (i < curMenu->length); ++i)
+	{
+		int posY = 80 + (gameFontRegular.h + gameFontRegular.leading) * i;
+
+		if (mouse[1] >= posY && mouse[1] <= posY + gameFontRegular.h)
+		{
+			menuSel = i;
+			break;
 		}
 	}
 

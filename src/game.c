@@ -250,6 +250,21 @@ void gameLogic()
 				stoneA.type = STONE_EMPTY;
 				keys[KEY_CANCEL] = 0;
 			}
+
+			if (mouseMoved)
+			{
+					int mouseX = (mouse[0] - BOARD_OFFSET_X) / (STONE_W - 1);
+					int mouseY = (mouse[1] - BOARD_OFFSET_Y) / (STONE_H - 1);
+
+					if (mouseX > 0 && mouseX < BOARD_W - 1)
+					{
+						cursorX = mouseX;
+					}
+					if (mouseY > 0 && mouseY < BOARD_H - 1)
+					{
+						cursorY = mouseY;
+					}
+			}
 		}
 
 		if (cursorX < 1)

@@ -5,9 +5,9 @@
 
 #define JOY_DEADZONE		5000
 
-void input();
-
 extern int keys[2048];
+extern int mouse[2];
+extern int mouseMoved;
 
 enum KeyNames
 {
@@ -21,5 +21,8 @@ enum KeyNames
 	KEY_CANCEL	= SDLK_LALT,
 	KEY_EXTRA	= SDLK_SPACE
 };
+
+void input();
+void updateMouse();
 
 #endif /* _INPUT_H_ */
