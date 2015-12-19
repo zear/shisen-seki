@@ -10,8 +10,10 @@ void upscale2(uint32_t *to, uint32_t *from)
 	unsigned int i, j;
 	int scaleWidth = SCREEN_W * 2;
 
-	for (j = 0; j < SCREEN_H; ++j) {
-		for (i = 0; i < SCREEN_W/2; ++i) {
+	for (j = 0; j < SCREEN_H; ++j)
+	{
+		for (i = 0; i < SCREEN_W/2; ++i)
+		{
 			tmp = *from++;
 
 			tmp2 = (tmp & 0xffff) | (tmp << 16);
