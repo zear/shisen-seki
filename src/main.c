@@ -18,6 +18,12 @@ int init()
 	getConfig();
 	getHiscore(0);
 
+
+	if (!scale)
+	{
+		scale = DEFAULT_SCALE;
+	}
+
 	if (initSDL())
 	{
 		return -1;

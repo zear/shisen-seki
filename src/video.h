@@ -8,6 +8,10 @@
 #define SCREEN_BPP		16
 #define FPS			60
 
+#ifndef DEFAULT_SCALE
+ #define DEFAULT_SCALE	2
+#endif
+
 extern int quit;
 extern SDL_Surface *screen;
 extern SDL_Surface *screenScaled;
