@@ -36,6 +36,7 @@ typedef struct menuContainer
 {
 	menuItems *items;
 	int length;
+	int y;
 } menuContainer;
 
 extern menuContainer menuMain;

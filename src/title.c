@@ -382,7 +382,7 @@ void titleLogic()
 
 	for (i = 0; mouseMoved && (i < curMenu->length); ++i)
 	{
-		int posY = 80 + (gameFontRegular.h + gameFontRegular.leading) * i;
+		int posY = curMenu->y + (gameFontRegular.h + gameFontRegular.leading) * i;
 
 		if (mouse[1] / scale >= posY && mouse[1] / scale <= posY + gameFontRegular.h)
 		{
@@ -545,8 +545,6 @@ void titleDraw()
 		}
 		else
 		{
-			int posY = 80;
-
 			if (curMenu == &menuNewGame)
 			{
 				switch (newGameMode)
@@ -585,11 +583,10 @@ void titleDraw()
 			}
 			else if (curMenu == &menuResetScore)
 			{
-				posY = 120;
 				dTextCentered(&gameFontSelected, "Do you want to delete the score entries?", 100, SHADOW_OUTLINE);
 			}
 
-			menuDraw(curMenu, &gameFontRegular, &gameFontSelected, menuSel, curMenu == &menuMain ? (savePresent ? 0 : 1) : 0, posY);
+			menuDraw(curMenu, &gameFontRegular, &gameFontSelected, menuSel, curMenu == &menuMain ? (savePresent ? 0 : 1) : 0, curMenu->y);
 		}
 
 		if (curMenu == &menuMain)

@@ -81,12 +81,16 @@ void menuLoad()
 {
 	menuMain.items = menuMainItems;
 	menuMain.length = sizeof(menuMainItems)/sizeof(menuMainItems[0]);
+	menuMain.y = 80;
 	menuNewGame.items = menuNewGameItems;
 	menuNewGame.length = sizeof(menuNewGameItems)/sizeof(menuNewGameItems[0]);
+	menuNewGame.y = 80;
 	menuOptions.items = menuOptionsItems;
 	menuOptions.length = sizeof(menuOptionsItems)/sizeof(menuOptionsItems[0]);
+	menuOptions.y = 80;
 	menuResetScore.items = menuResetScoreItems;
 	menuResetScore.length = sizeof(menuResetScoreItems)/sizeof(menuResetScoreItems[0]);
+	menuResetScore.y = 120;
 }
 
 void menuDraw(menuContainer *curMenu, font *fontRegular, font *fontSelected, int selection, int offset, int y)
