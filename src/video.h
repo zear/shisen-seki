@@ -9,7 +9,11 @@
 #define FPS			60
 
 #ifndef DEFAULT_SCALE
- #define DEFAULT_SCALE	2
+ #if defined(NO_SCALING)
+  #define DEFAULT_SCALE	1
+ #else
+  #define DEFAULT_SCALE	2
+ #endif
 #endif
 
 extern int quit;
