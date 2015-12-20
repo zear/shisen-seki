@@ -536,7 +536,6 @@ void titleDraw()
 	}
 	else
 	{
-		int posY = 80;
 		dTextCentered(&gameFontRegular, "S h i s e n - S e k i", 40, SHADOW_OUTLINE);
 
 		if (programStateNew == STATE_GAME)
@@ -546,6 +545,8 @@ void titleDraw()
 		}
 		else
 		{
+			int posY = 80;
+
 			if (curMenu == &menuNewGame)
 			{
 				switch (newGameMode)
