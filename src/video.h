@@ -19,6 +19,7 @@ extern int scale;
 
 int initSDL();
 void deinitSDL();
+void updateScale();
 SDL_Surface *loadImage(char *fileName);
 void clipImage(SDL_Rect *source, int tileWidth, int tileHeight, int rowLength, int numOfTiles);
 void drawImage(SDL_Surface *source, SDL_Rect *clip, SDL_Surface *destination, int x, int y);

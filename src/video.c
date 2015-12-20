@@ -18,8 +18,9 @@ int initSDL()
 	SDL_WM_SetCaption("Shisen-Seki", NULL);
 	SDL_ShowCursor(SDL_DISABLE);
 
-	screenScaled = SDL_SetVideoMode(SCREEN_W * scale, SCREEN_H * scale, SCREEN_BPP, SDL_HWSURFACE | SDL_DOUBLEBUF);
-	screen = scale > 1 ? SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_W, SCREEN_H, SCREEN_BPP, 0, 0, 0, 0) : screenScaled;
+	updateScale();
+/*	screenScaled = SDL_SetVideoMode(SCREEN_W * scale, SCREEN_H * scale, SCREEN_BPP, SDL_HWSURFACE | SDL_DOUBLEBUF);*/
+/*	screen = scale > 1 ? SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_W, SCREEN_H, SCREEN_BPP, 0, 0, 0, 0) : screenScaled;*/
 
 	if(screen == NULL)
 	{
@@ -47,6 +48,12 @@ void deinitSDL()
 	}
 
 	SDL_Quit();
+}
+
+void updateScale()
+{
+	screenScaled = SDL_SetVideoMode(SCREEN_W * scale, SCREEN_H * scale, SCREEN_BPP, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	screen = scale > 1 ? SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_W, SCREEN_H, SCREEN_BPP, 0, 0, 0, 0) : screenScaled;
 }
 
 SDL_Surface *loadImage(char *fileName)

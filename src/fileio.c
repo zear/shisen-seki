@@ -5,9 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include "audio.h"
 #include "board.h"
 #include "game.h"
 #include "hiscore.h"
+#include "input.h"
 #include "video.h"
 
 char *configDir;
@@ -67,7 +69,13 @@ void getConfig()
 		*arg = '\0';
 		arg++;
 
-	if (!strcmp(line, "SCALE") && !scale)
+	if (!strcmp(line, "USE_JOYSTICK"))
+		sscanf(arg, "%d", (int *)&enableJoystick);
+	else if (!strcmp(line, "MUSIC"))
+		sscanf(arg, "%d", (int *)&enableMusic);
+	else if (!strcmp(line, "SFX"))
+		sscanf(arg, "%d", (int *)&enableSfx);
+	else if (!strcmp(line, "SCALE") && !scale)
 		sscanf(arg, "%d", (int *)&scale);
 	else if (!strcmp(line, "GAME_MODE"))
 		sscanf(arg, "%d", (int *)&newGameMode);
@@ -109,7 +117,7 @@ void storeConfig()
 		return;
 	}
 
-	fprintf(f, "SCALE %d\nGAME_MODE %d\nALGORITHM %d\nANIMATIONS %d\n", scale, newGameMode, currentAlgorithm, showAnimations);
+	fprintf(f, "USE_JOYSTICK %d\nMUSIC %d\nSFX %d\nSCALE %d\nGAME_MODE %d\nALGORITHM %d\nANIMATIONS %d\n", enableJoystick, enableMusic, enableSfx, scale, newGameMode, currentAlgorithm, showAnimations);
 
 	fclose(f);
 	free(config);

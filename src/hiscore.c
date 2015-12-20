@@ -150,6 +150,23 @@ void hiscoreAddRecord(scoreEntry *entry, gameMode *mode, algorithm *algo)
 	highlightEntry = place;
 }
 
+void hiscoreReset()
+{
+	int i;
+	int j;
+
+	for (i = 0; i < MAX_MODES; ++i)
+	{
+		for (j = 0; j < MAX_SCORES; ++j)
+		{
+			scoreTable[i][j].name[0] = '\n';
+			scoreTable[i][j].time = 0;
+		}
+	}
+
+	storeHiscore();
+}
+
 void hiscoreLogic()
 {
 	if (keys[KEY_BACK])

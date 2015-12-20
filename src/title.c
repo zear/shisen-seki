@@ -6,6 +6,7 @@
 #include "fileio.h"
 #include "font.h"
 #include "game.h"
+#include "hiscore.h"
 #include "input.h"
 #include "main.h"
 #include "menu.h"
@@ -19,6 +20,7 @@ menuContainer *curMenu;
 int menuSel;
 int displayHelp;
 int displayCredits;
+int displayVersion;
 int helpPage;
 int creditsPage;
 int savePresent;
@@ -69,6 +71,10 @@ void titleLogic()
 		{
 			displayCredits = 0;
 		}
+		else if (displayVersion)
+		{
+			displayVersion = 0;
+		}
 		else
 		{
 			if (curMenu == &menuNewGame)
@@ -93,6 +99,10 @@ void titleLogic()
 		else if (displayCredits)
 		{
 			displayCredits = 0;
+		}
+		else if (displayVersion)
+		{
+			displayVersion = 0;
 		}
 		else
 		{
@@ -127,17 +137,39 @@ void titleLogic()
 				displayCredits = 0;
 			}
 		}
+		else if (displayVersion)
+		{
+			displayVersion = 0;
+		}
 		else
 		{
 			switch (curMenu->items[menuSel])
 			{
 				case MENU_BACK:
-					if (curMenu == &menuNewGame)
+					if (curMenu == &menuNewGame || curMenu == &menuOptions)
 					{
 						curMenu = &menuMain;
 						menuSel = savePresent ? 0 : 1;
 					}
 				break;
+
+				case MENU_YES:
+					if (curMenu == &menuResetScore)
+					{
+						hiscoreReset();
+						curMenu = &menuOptions;
+						menuSel = 0;
+					}
+				break;
+
+				case MENU_NO:
+					if (curMenu == &menuResetScore)
+					{
+						curMenu = &menuOptions;
+						menuSel = 0;
+					}
+				break;
+
 				case MENU_CONTINUE:
 					if (savePresent)
 					{
@@ -176,8 +208,40 @@ void titleLogic()
 						currentAlgorithm = ALGO_UNSET+1;
 					}
 				break;
+
+				case MENU_HAVE_JOYSTICK:
+					enableJoystick = !enableJoystick;
+				break;
+
+				case MENU_HAVE_MUSIC:
+					enableMusic = !enableMusic;
+					enableMusic ? resumeMusic() : pauseMusic();
+				break;
+
+				case MENU_HAVE_SFX:
+					enableSfx = !enableSfx;
+				break;
+
 				case MENU_ANIMATIONS:
 					showAnimations = !showAnimations;
+				break;
+
+				case MENU_SCALE:
+					if (++scale > 2)
+					{
+						scale = 1;
+					}
+
+					updateScale();
+				break;
+
+				case MENU_RESET_HISCORE:
+					curMenu = &menuResetScore;
+					menuSel = 0;
+				break;
+
+				case MENU_VERSION_INFO:
+					displayVersion = 1;
 				break;
 
 				case MENU_HISCORE:
@@ -186,6 +250,11 @@ void titleLogic()
 
 				case MENU_HELP:
 					displayHelp = 1;
+				break;
+
+				case MENU_OPTIONS:
+					curMenu = &menuOptions;
+					menuSel = 0;
 				break;
 
 				case MENU_CREDITS:
@@ -229,9 +298,31 @@ void titleLogic()
 		{
 			currentAlgorithm = ALGO_COUNT - 1;
 		}
+		else if (curMenu->items[menuSel] == MENU_HAVE_JOYSTICK)
+		{
+			enableJoystick = !enableJoystick;
+		}
+		else if (curMenu->items[menuSel] == MENU_HAVE_MUSIC)
+		{
+			enableMusic = !enableMusic;
+			enableMusic ? resumeMusic() : pauseMusic();
+		}
+		else if (curMenu->items[menuSel] == MENU_HAVE_SFX)
+		{
+			enableSfx = !enableSfx;
+		}
 		else if (curMenu->items[menuSel] == MENU_ANIMATIONS)
 		{
 			showAnimations = !showAnimations;
+		}
+		else if (curMenu->items[menuSel] == MENU_SCALE)
+		{
+			if (--scale < 1)
+			{
+				scale = 2;
+			}
+
+			updateScale();
 		}
 	}
 
@@ -261,9 +352,31 @@ void titleLogic()
 		{
 			currentAlgorithm = ALGO_UNSET + 1;
 		}
+		else if (curMenu->items[menuSel] == MENU_HAVE_JOYSTICK)
+		{
+			enableJoystick = !enableJoystick;
+		}
+		else if (curMenu->items[menuSel] == MENU_HAVE_MUSIC)
+		{
+			enableMusic = !enableMusic;
+			enableMusic ? resumeMusic() : pauseMusic();
+		}
+		else if (curMenu->items[menuSel] == MENU_HAVE_SFX)
+		{
+			enableSfx = !enableSfx;
+		}
 		else if (curMenu->items[menuSel] == MENU_ANIMATIONS)
 		{
 			showAnimations = !showAnimations;
+		}
+		else if (curMenu->items[menuSel] == MENU_SCALE)
+		{
+			if (++scale > 2)
+			{
+				scale = 1;
+			}
+
+			updateScale();
 		}
 	}
 
@@ -278,7 +391,7 @@ void titleLogic()
 		}
 	}
 
-	if (!displayHelp)
+	if (!displayHelp && !displayCredits && !displayVersion)
 	{
 		if(keys[KEY_UP])
 		{
@@ -404,11 +517,26 @@ void titleDraw()
 			dTextCentered(&gameFontBlack, creditsText[creditsPage][i], 50 + (gameFontRegular.h + gameFontRegular.leading) * i, SHADOW_NONE);
 		}
 	}
+	else if (displayVersion)
+	{
+		int i;
+		char versionText[4][30];
+
+		sprintf(versionText[0], "Version: %d.%d.%d", PROGRAM_MAJOR_VERSION, PROGRAM_MINOR_VERSION, PROGRAM_PATCH_VERSION);
+		sprintf(versionText[1], "Audio support: %s\n", hasAudio ? "yes" : "no");
+		sprintf(versionText[2], "Save format ver.: %d\n", SAVE_FORMAT_VERSION);
+		sprintf(versionText[3], "Score format ver.: %d\n", HISCORE_FORMAT_VERSION);
+
+		dTextCentered(&gameFontRegular, "S h i s e n - S e k i", 40, SHADOW_OUTLINE);
+
+		for (i = 0; i < 4; ++i)
+		{
+			dTextCentered(&gameFontRegular, versionText[i], 80 + (gameFontRegular.h + gameFontRegular.leading) * i, SHADOW_DROP);
+		}
+	}
 	else
 	{
-		char version[15];
-		sprintf(version, "v%d.%d.%d", PROGRAM_MAJOR_VERSION, PROGRAM_MINOR_VERSION, PROGRAM_PATCH_VERSION);
-		dText(&gameFontBlack, version, SCREEN_W - strlen(version) * (gameFontSelected.w + gameFontSelected.tracking), 1, SHADOW_NONE);
+		int posY = 80;
 		dTextCentered(&gameFontRegular, "S h i s e n - S e k i", 40, SHADOW_OUTLINE);
 
 		if (programStateNew == STATE_GAME)
@@ -445,14 +573,27 @@ void titleDraw()
 					default:
 					break;
 				}
-
+			}
+			else if (curMenu == &menuOptions)
+			{
+				snprintf(menuText[MENU_HAVE_JOYSTICK-1], 20, "Use joystick: %s", enableJoystick ? "yes" : "no");
+				snprintf(menuText[MENU_HAVE_MUSIC-1], 20, "Play music: %s", enableMusic ? "yes" : "no");
+				snprintf(menuText[MENU_HAVE_SFX-1], 20, "Play sfx: %s", enableSfx ? "yes" : "no");
 				snprintf(menuText[MENU_ANIMATIONS-1], 20, "Animations: %s", showAnimations ? "yes" : "no");
+				snprintf(menuText[MENU_SCALE-1], 20, "Screen scale: %dx", scale);
+			}
+			else if (curMenu == &menuResetScore)
+			{
+				posY = 120;
+				dTextCentered(&gameFontSelected, "Do you want to delete the score entries?", 100, SHADOW_OUTLINE);
 			}
 
-			menuDraw(curMenu, &gameFontRegular, &gameFontSelected, menuSel, curMenu == &menuMain ? (savePresent ? 0 : 1) : 0, 80);
+			menuDraw(curMenu, &gameFontRegular, &gameFontSelected, menuSel, curMenu == &menuMain ? (savePresent ? 0 : 1) : 0, posY);
 		}
 
-		dTextCentered(&gameFontSelected, "(c) 2015 Artur Rojek", SCREEN_H - (gameFontSelected.h + gameFontSelected.leading), SHADOW_DROP);
-
+		if (curMenu == &menuMain)
+		{
+			dTextCentered(&gameFontSelected, "(c) 2015 Artur Rojek", SCREEN_H - (gameFontSelected.h + gameFontSelected.leading), SHADOW_DROP);
+		}
 	}
 }

@@ -3,6 +3,8 @@
 #include <SDL_mixer.h>
 
 int hasAudio;
+int enableMusic = 1;
+int enableSfx = 1;
 Mix_Music *bgdMusic = NULL;
 Mix_Chunk *clearSfx = NULL;
 
@@ -63,7 +65,7 @@ void unloadMusic(Mix_Music **track)
 
 void playMusic(Mix_Music *track)
 {
-	if (!hasAudio)
+	if (!hasAudio || !enableMusic)
 	{
 		return;
 	}
@@ -71,6 +73,26 @@ void playMusic(Mix_Music *track)
 	if (!Mix_PlayingMusic())
 	{
 		Mix_PlayMusic(track, -1);
+	}
+}
+
+void resumeMusic()
+{
+	if (!hasAudio)
+	{
+		return;
+	}
+
+	if (Mix_PausedMusic())
+	{
+		Mix_ResumeMusic();
+	}
+	else if (!Mix_PlayingMusic())
+	{
+		if(bgdMusic)
+		{
+			playMusic(bgdMusic);
+		}
 	}
 }
 
@@ -112,5 +134,10 @@ void unloadSfx(Mix_Chunk **effect)
 
 void playSfx(Mix_Chunk *effect)
 {
+	if (!hasAudio || !enableSfx)
+	{
+		return;
+	}
+
 	Mix_PlayChannel(-1, effect, 0);
 }

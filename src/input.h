@@ -8,6 +8,7 @@
 extern int keys[2048];
 extern int mouse[2];
 extern int mouseMoved;
+extern int enableJoystick;
 
 enum KeyNames
 {

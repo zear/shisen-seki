@@ -7,6 +7,8 @@
 #define AUDIO_CHUNK_SIZE	1024
 
 extern int hasAudio;
+extern int enableMusic;
+extern int enableSfx;
 extern Mix_Music *bgdMusic;
 extern Mix_Chunk *clearSfx;
 
@@ -15,6 +17,7 @@ void deinitAudio();
 Mix_Music *loadMusic(Mix_Music *track, char *fileName);
 void unloadMusic(Mix_Music **track);
 void playMusic(Mix_Music *track);
+void resumeMusic();
 void pauseMusic();
 Mix_Chunk *loadSfx(Mix_Chunk *effect, char *fileName);
 void unloadSfx(Mix_Chunk **effect);

@@ -7,6 +7,7 @@ SDL_Event event;
 int keys[2048];
 int mouse[2];
 int mouseMoved;
+int enableJoystick = 1;
 int joyCanMoveX = 1;
 int joyCanMoveY = 1;
 
@@ -26,6 +27,11 @@ void input()
 				keys[event.key.keysym.sym] = 0;
 			break;
 			case SDL_JOYAXISMOTION:			// Analog joystick movement
+				if (!enableJoystick)
+				{
+					break;
+				}
+
 				switch (event.jaxis.axis)
 				{
 					case 0:		// axis 0 (left-right)
