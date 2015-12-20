@@ -16,6 +16,7 @@ int initSDL()
 	}
 
 	SDL_WM_SetCaption("Shisen-Seki", NULL);
+	SDL_WM_SetIcon(loadImage("data/gfx/icon.bmp"), NULL);
 	SDL_ShowCursor(SDL_DISABLE);
 
 	updateScale();
