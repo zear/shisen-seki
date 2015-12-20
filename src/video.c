@@ -19,8 +19,6 @@ int initSDL()
 	SDL_ShowCursor(SDL_DISABLE);
 
 	updateScale();
-/*	screenScaled = SDL_SetVideoMode(SCREEN_W * scale, SCREEN_H * scale, SCREEN_BPP, SDL_HWSURFACE | SDL_DOUBLEBUF);*/
-/*	screen = scale > 1 ? SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_W, SCREEN_H, SCREEN_BPP, 0, 0, 0, 0) : screenScaled;*/
 
 	if(screen == NULL)
 	{
@@ -52,6 +50,11 @@ void deinitSDL()
 
 void updateScale()
 {
+	if (screen && screen != screenScaled)
+	{
+		SDL_FreeSurface(screen);
+	}
+
 	screenScaled = SDL_SetVideoMode(SCREEN_W * scale, SCREEN_H * scale, SCREEN_BPP, SDL_HWSURFACE | SDL_DOUBLEBUF);
 	screen = scale > 1 ? SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_W, SCREEN_H, SCREEN_BPP, 0, 0, 0, 0) : screenScaled;
 }
