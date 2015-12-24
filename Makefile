@@ -65,6 +65,7 @@ ifeq ($(PLATFORM), gcw0)
 	cp $(TARGET)		$(RELEASEDIR)
 	cp -R data		$(RELEASEDIR)
 	cp default.gcw0.desktop	$(RELEASEDIR)
+	cp gcw0.man.txt		$(RELEASEDIR)
 	cp shisen.png		$(RELEASEDIR)
 	cp LICENSE.txt		$(RELEASEDIR)
 	mksquashfs		$(RELEASEDIR) Shisen-Seki.opk -all-root -noappend -no-exports -no-xattrs

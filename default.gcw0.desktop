@@ -6,4 +6,5 @@ Terminal=false
 Type=Application
 StartupNotify=true
 Icon=shisen
+X-OD-Manual=gcw0.man.txt
 Categories=games;
