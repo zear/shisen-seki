@@ -3,7 +3,7 @@ ifeq ($(PLATFORM), gcw0)
 	STRIP		:= /opt/gcw0-toolchain/usr/bin/mipsel-linux-strip
 	SYSROOT		:= $(shell $(CC) --print-sysroot)
 	CFLAGS		:= $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
-	CFLAGS		+= -DNO_FRAMELIMIT -DNO_SCALING
+	CFLAGS		+= -DPLATFORM_GCW0 -DNO_FRAMELIMIT -DNO_SCALING
 	LDFLAGS		:= $(shell $(SYSROOT)/usr/bin/sdl-config --libs) -lSDL_mixer -lm
 	RELEASEDIR	:= release
 endif
@@ -13,7 +13,7 @@ ifeq ($(PLATFORM), a320)
 	STRIP		:= /opt/opendingux-toolchain/usr/bin/mipsel-linux-strip
 	SYSROOT		:= $(shell $(CC) --print-sysroot)
 	CFLAGS		:= $(shell $(SYSROOT)/usr/bin/sdl-config --cflags)
-	CFLAGS		+= -DNO_FRAMELIMIT -DNO_SCALING
+	CFLAGS		+= -DPLATFORM_A320 -DNO_FRAMELIMIT -DNO_SCALING
 	LDFLAGS		:= $(shell $(SYSROOT)/usr/bin/sdl-config --libs) -lSDL_mixer -lm
 	TARGET		:= shisen.dge
 endif
