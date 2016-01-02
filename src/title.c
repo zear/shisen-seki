@@ -605,7 +605,7 @@ void titleDraw()
 
 		if (curMenu == &menuMain)
 		{
-			dTextCentered(&gameFontSelected, "(c) 2015 Artur Rojek", SCREEN_H - (gameFontSelected.h + gameFontSelected.leading), SHADOW_DROP);
+			dTextCentered(&gameFontSelected, "(c) 2015-2016 Artur Rojek", SCREEN_H - (gameFontSelected.h + gameFontSelected.leading), SHADOW_DROP);
 		}
 	}
 }

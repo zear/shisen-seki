@@ -15,8 +15,8 @@ Not all games are solvable.
 * Graphics - Joe Vargas (jxv)
 
 [CHANGELOG]
-* v0.2.0 (2015/12/24)
-- Original game release for GCW Zero
+* v0.2.0 (2016/01/02)
+- Original game release for Dingoo A320
 
 [LICENSES]
 * Source code - MIT License - https://github.com/zear/shisen-seki
