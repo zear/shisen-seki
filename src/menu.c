@@ -26,7 +26,9 @@ menuItems menuNewGameItems[] =
 
 menuItems menuOptionsItems[] =
 {
+#if !defined(PLATFORM_A320)
 	MENU_HAVE_JOYSTICK,
+#endif
 	MENU_HAVE_MUSIC,
 	MENU_HAVE_SFX,
 	MENU_ANIMATIONS,

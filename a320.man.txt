@@ -15,7 +15,7 @@ Not all games are solvable.
 * Graphics - Joe Vargas (jxv)
 
 [CHANGELOG]
-* v0.2.0 (2016/01/02)
+* v0.2.1 (2016/01/02)
 - Original game release for Dingoo A320
 
 [LICENSES]
