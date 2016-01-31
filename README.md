@@ -1,4 +1,6 @@
 # Shisen-Seki (四川石)
+![screenshot](screenshot.png "Gameplay example")
+
 Shisen-Seki is a game of *Shisen-Sho* - a classic japanese logic game utilizing Mahjong stones.
 
 The goal of Shisen-Sho is to remove all stones from the board. Do so by matching pairs of stones with the same face.
