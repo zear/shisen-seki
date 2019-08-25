@@ -183,6 +183,7 @@ void hiscoreLogic()
 	if(keys[KEY_LEFT])
 	{
 		keys[KEY_LEFT] = 0;
+		updateScreen = 1;
 
 		if (--hiscorePage < 0)
 		{
@@ -193,6 +194,7 @@ void hiscoreLogic()
 	if(keys[KEY_RIGHT])
 	{
 		keys[KEY_RIGHT] = 0;
+		updateScreen = 1;
 
 		if (++hiscorePage >= MAX_MODES)
 		{

@@ -60,6 +60,7 @@ void boardFadeOutSelectedStones()
 		if (fadeOutTimer <= 0)
 		{
 			boardRemoveSelectedStones();
+			updateScreen = 1;
 		}
 	}
 }

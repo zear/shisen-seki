@@ -5,6 +5,7 @@
 SDL_Surface *screen;
 SDL_Surface *screenScaled;
 int scale;
+int updateScreen = 1;
 Uint32 curTicks;
 Uint32 lastTicks = 0;
 

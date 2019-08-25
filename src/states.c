@@ -49,6 +49,7 @@ void checkState()
 		}
 
 		programStateActive = programStateNew;
+		updateScreen = 1;
 	}
 }
 
@@ -75,6 +76,12 @@ void logic()
 
 void draw()
 {
+#if defined(ADAPTIVE_FRAMERATE)
+	if (!updateScreen)
+		return;
+#endif
+
+	updateScreen = 0;
 	clearScreen();
 
 	switch(programStateActive)

@@ -60,6 +60,10 @@ void gamePrepareHiscore()
 
 void gameLogic()
 {
+	/* Used for screen update calculation */
+	static int cursorXOld;
+	static int cursorYOld;
+
 	if (enteringHiscore)
 	{
 		if (keys[KEY_BACK])
@@ -73,6 +77,7 @@ void gameLogic()
 			{
 				canMoveX = KEY_DELAY;
 				--scoreCursorPos;
+				updateScreen = 1;
 			}
 		}
 		else if (keys[KEY_RIGHT])
@@ -81,6 +86,7 @@ void gameLogic()
 			{
 				canMoveX = KEY_DELAY;
 				++scoreCursorPos;
+				updateScreen = 1;
 			}
 		}
 		else
@@ -90,6 +96,7 @@ void gameLogic()
 
 		if (keys[KEY_UP])
 		{
+			updateScreen = 1;
 			if (--canMoveY <= 0)
 			{
 				canMoveY = KEY_DELAY;
@@ -111,6 +118,7 @@ void gameLogic()
 		}
 		else if (keys[KEY_DOWN])
 		{
+			updateScreen = 1;
 			if (--canMoveY <= 0)
 			{
 				canMoveY = KEY_DELAY;
@@ -146,6 +154,7 @@ void gameLogic()
 					hiscoreAddRecord(&hiscoreEntry, &currentGameMode, &currentAlgorithm);
 					storeHiscore();
 					programStateNew = STATE_HISCORE;
+					updateScreen = 1;
 					break;
 				}
 			}
@@ -167,6 +176,9 @@ void gameLogic()
 	}
 	else
 	{
+		cursorXOld = cursorX;
+		cursorYOld = cursorY;
+
 		if (keys[KEY_BACK])
 		{
 			keys[KEY_BACK] = 0;
@@ -182,6 +194,7 @@ void gameLogic()
 			keys[KEY_EXTRA] = 0;
 
 			showStoneRank = !showStoneRank;
+			updateScreen = 1;
 		}
 
 		if (!fadeOutTimer)
@@ -289,6 +302,9 @@ void gameLogic()
 	{
 		++gameTime;
 	}
+
+	updateScreen = updateScreen || cursorXOld != cursorX || cursorYOld != cursorX ||
+		       fadeOutTimer || !(gameTime % FPS);
 }
 
 void gameGuiDraw()

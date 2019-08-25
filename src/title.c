@@ -62,6 +62,7 @@ void titleLogic()
 	if(keys[KEY_BACK])
 	{
 		keys[KEY_BACK] = 0;
+		updateScreen = 1;
 
 		if (displayHelp)
 		{
@@ -91,6 +92,7 @@ void titleLogic()
 	if(keys[KEY_CANCEL])
 	{
 		keys[KEY_CANCEL] = 0;
+		updateScreen = 1;
 
 		if (displayHelp)
 		{
@@ -120,6 +122,7 @@ void titleLogic()
 	if(keys[KEY_OK])
 	{
 		keys[KEY_OK] = 0;
+		updateScreen = 1;
 
 		if (displayHelp)
 		{
@@ -275,6 +278,7 @@ void titleLogic()
 	if(keys[KEY_LEFT])
 	{
 		keys[KEY_LEFT] = 0;
+		updateScreen = 1;
 
 		if (displayHelp)
 		{
@@ -329,6 +333,7 @@ void titleLogic()
 	if(keys[KEY_RIGHT])
 	{
 		keys[KEY_RIGHT] = 0;
+		updateScreen = 1;
 
 		if (displayHelp)
 		{
@@ -387,6 +392,7 @@ void titleLogic()
 		if (mouse[1] / scale >= posY && mouse[1] / scale <= posY + gameFontRegular.h)
 		{
 			menuSel = i;
+			updateScreen = 1;
 			break;
 		}
 	}
@@ -396,6 +402,7 @@ void titleLogic()
 		if(keys[KEY_UP])
 		{
 			keys[KEY_UP] = 0;
+			updateScreen = 1;
 
 			--menuSel;
 
@@ -413,6 +420,7 @@ void titleLogic()
 		if(keys[KEY_DOWN])
 		{
 			keys[KEY_DOWN] = 0;
+			updateScreen = 1;
 
 			++menuSel;
 
